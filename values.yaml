@@ -1,0 +1,63 @@
+replicaCount: 1
+
+image:
+  repository: crprivateaiprod.azurecr.io/deid
+  pullPolicy: IfNotPresent
+  # Can be a direct version tag / container flavour (i.e. 3.3.2-cpu) OR a 'latest' tag (i.e. cpu, gpu)
+  tag: "cpu"
+
+imagePullSecrets:
+  # Rename this to whatever you stored your CR Creds for the Private AI CR Kube secret to
+  - name: crprivateaiprod-creds
+  - name: ecrcred
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ""
+
+selectorLabels:
+  - app: pai-deployment
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 8080
+  periodSeconds: 30
+  initialDelaySeconds: 120
+  hostIP: 0.0.0.0
+
+license:
+  isMarketplace: true
+  name: pai-license
+  volumeMount: license-volume
+  mountPath: /app/license
+
+envVars:
+  # - name: PAI_DISABLE_RAM_CHECK
+  #   value: "true"
+
+resources: {}
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+ingress:
+  enabled: false

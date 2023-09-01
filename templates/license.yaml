@@ -1,0 +1,9 @@
+{{- if not .Values.license.isMarketplace }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pai-license
+data:
+  license.info: |-
+    {{ .Files.Get "license.json" }}
+{{- end }}

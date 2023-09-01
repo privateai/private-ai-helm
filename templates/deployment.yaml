@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "private-ai-deid.fullname" . }}
+  labels:
+    {{- include "private-ai-deid.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "private-ai-deid.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "private-ai-deid.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name}}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}      
+      containers:
+        - name: {{ .Chart.Name }}          
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              hostIP: {{ .Values.service.hostIP}}
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          {{- with .Values.envVars }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if not .Values.license.isMarketplace }}
+          volumeMounts:
+            - name: {{ .Values.license.volumeMount }}
+              mountPath: {{ .Values.license.mountPath }}
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: {{ .Values.service.targetPort }}
+            periodSeconds: {{ .Values.service.periodSeconds }}
+            initialDelaySeconds: {{ .Values.service.initialDelaySeconds }}
+      {{- if not .Values.license.isMarketplace }}              
+      volumes:
+        - name: {{ .Values.license.volumeMount }}
+          configMap:
+            name: {{ .Values.license.name }}
+            items:
+            - key: license.info
+              path: license.json
+      {{- end }}
