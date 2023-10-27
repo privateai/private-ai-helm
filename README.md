@@ -1,2 +1,5 @@
-# Private AI Helm Chart 
-A Helm chart to install Private AI to your Kubernetes cluster
+# Private AI Template Helm Chart 
+
+Feel free to use this Helm chart as a boilerplate for your Private AI container deployment.
+Please keep in mind that for deployments requiring a public facing endpoint, you will need to provide your own cerificate / deployment configurations.
+This Helm chart is meant to help you get started with your deployment, and is NOT ready to be used directly for a production deployment.
