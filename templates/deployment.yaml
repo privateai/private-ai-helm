@@ -26,6 +26,11 @@ spec:
       containers:
         - name: {{ .Chart.Name }}          
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- if .Values.gpuEnabled }}
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -40,6 +45,10 @@ spec:
           volumeMounts:
             - name: {{ .Values.license.volumeMount }}
               mountPath: {{ .Values.license.mountPath }}
+            {{- if .Values.gpuEnabled }}
+            - name: dshm-volume
+              mountPath: /dev/shm
+            {{- end }}
           {{- end }}
           livenessProbe:
             httpGet:
@@ -55,4 +64,9 @@ spec:
             items:
             - key: license.info
               path: license.json
+        {{- if .Values.gpuEnabled }}
+        - name: dshm-volue
+          emptyDir:
+            medium: Memory
+        {{- end }}
       {{- end }}
