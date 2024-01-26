@@ -65,7 +65,7 @@ spec:
             - key: license.info
               path: license.json
         {{- if .Values.gpuEnabled }}
-        - name: dshm-volue
+        - name: dshm-volume
           emptyDir:
             medium: Memory
         {{- end }}
