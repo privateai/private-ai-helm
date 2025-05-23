@@ -56,6 +56,7 @@ spec:
               port: {{ .Values.service.targetPort }}
             periodSeconds: {{ .Values.service.periodSeconds }}
             initialDelaySeconds: {{ .Values.service.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.service.timeoutSeconds }}
       {{- if not .Values.license.isMarketplace }}              
       volumes:
         - name: {{ .Values.license.volumeMount }}
