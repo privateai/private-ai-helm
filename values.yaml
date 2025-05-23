@@ -34,9 +34,10 @@ service:
   type: LoadBalancer
   port: 80
   targetPort: 8080
-  periodSeconds: 30
+  periodSeconds: 60
   initialDelaySeconds: 120
   hostIP: 0.0.0.0
+  timeoutSeconds: 10
 
 license:
   isMarketplace: true
