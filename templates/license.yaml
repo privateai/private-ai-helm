@@ -4,6 +4,6 @@ kind: ConfigMap
 metadata:
   name: pai-license
 data:
-  license.info: |
-  {{ .Files.Get "license.json" | nindent 4 }}
+  license.info: |-
+    {{ .Files.Get "license.json" }}
 {{- end }}
