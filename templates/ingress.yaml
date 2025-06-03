@@ -1,0 +1,29 @@
+{{- if ((.Values.ingress).enabled) }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "private-ai-deid.fullname" . }}
+spec:
+  ingressClassName: {{ .Values.ingress.ingressClassName }}
+  rules:
+  {{- range $host := .Values.ingress.hosts }}
+    - host: {{ $host.host }}
+      http:
+        {{- range $path := $host.paths }}
+        paths:
+          - backend:
+              service:
+                name: {{ include "private-ai-deid.fullname" $ }}
+                port:
+                  number: {{ $.Values.service.port }}
+            path: {{ $path.path }}
+            pathType: {{ $path.pathType }}
+        {{- end }}
+  {{- end }}
+  {{- range $tls := .Values.ingress.tls }}
+  tls:
+    - hosts:
+      - {{ $tls.host }}
+      secretName: {{ $tls.sslSecret }}
+  {{- end }}
+{{- end }}

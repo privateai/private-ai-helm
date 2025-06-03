@@ -12,7 +12,7 @@ gpuEnabled: false
 imagePullSecrets:
   # Rename this to whatever you stored your CR Creds for the Private AI CR Kube secret to
   - name: crprivateaiprod-creds
-  - name: ecrcred
+  # - name: ecrcred
 nameOverride: ""
 fullnameOverride: ""
 
@@ -36,7 +36,6 @@ service:
   targetPort: 8080
   periodSeconds: 60
   initialDelaySeconds: 120
-  hostIP: 0.0.0.0
   timeoutSeconds: 10
 
 license:
@@ -65,3 +64,14 @@ affinity: {}
 
 ingress:
   enabled: false
+  ingressClassName: nginx
+  # Replace this with the domain name for the ingress
+  hosts:
+    - host: ingress.domain.com
+      paths:
+        - path: /
+          pathType: Prefix
+  # Create a kubernetes secret with the TLS certificate matching the domain name
+  tls:
+    - host: ingress.domain.com
+      sslSecret: private-ai-tls
