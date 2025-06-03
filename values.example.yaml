@@ -32,11 +32,10 @@ securityContext: {}
 
 service:
   type: LoadBalancer
-  port: 8080
+  port: 80
   targetPort: 8080
   periodSeconds: 60
   initialDelaySeconds: 120
-  hostIP: 0.0.0.0
   timeoutSeconds: 10
 
 license:
@@ -67,8 +66,12 @@ ingress:
   enabled: false
   ingressClassName: nginx
   # Replace this with the domain name for the ingress
-  host: ingress.domain.com
-  path: /
-  pathType: Prefix
+  hosts:
+    - host: ingress.domain.com
+      paths:
+        - path: /
+          pathType: Prefix
   # Create a kubernetes secret with the TLS certificate matching the domain name
-  sslSecret: private-ai-tls
+  tls:
+    - host: ingress.domain.com
+      sslSecret: private-ai-tls

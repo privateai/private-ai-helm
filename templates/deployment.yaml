@@ -34,8 +34,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              hostIP: {{ .Values.service.hostIP}}
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
           {{- with .Values.envVars }}
           env:
@@ -63,8 +62,8 @@ spec:
           configMap:
             name: {{ .Values.license.name }}
             items:
-            - key: license.info
-              path: license.json
+              - key: license.info
+                path: license.json
         {{- if .Values.gpuEnabled }}
         - name: dshm-volume
           emptyDir:
