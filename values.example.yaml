@@ -39,7 +39,6 @@ service:
   timeoutSeconds: 10
 
 license:
-  isMarketplace: true
   name: pai-license
   volumeMount: license-volume
   mountPath: /app/license
