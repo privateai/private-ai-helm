@@ -40,7 +40,6 @@ spec:
           env:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if not .Values.license.isMarketplace }}
           volumeMounts:
             - name: {{ .Values.license.volumeMount }}
               mountPath: {{ .Values.license.mountPath }}
@@ -48,7 +47,6 @@ spec:
             - name: dshm-volume
               mountPath: /dev/shm
             {{- end }}
-          {{- end }}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -56,7 +54,6 @@ spec:
             periodSeconds: {{ .Values.service.periodSeconds }}
             initialDelaySeconds: {{ .Values.service.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.service.timeoutSeconds }}
-      {{- if not .Values.license.isMarketplace }}              
       volumes:
         - name: {{ .Values.license.volumeMount }}
           configMap:
@@ -69,4 +66,3 @@ spec:
           emptyDir:
             medium: Memory
         {{- end }}
-      {{- end }}
