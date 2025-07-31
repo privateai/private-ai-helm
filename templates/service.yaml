@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "private-ai-deid.fullname" . }}
+  name: {{ include "private-ai.fullname" . }}
   labels:
-    {{- include "private-ai-deid.labels" . | nindent 4 }}
+    {{- include "private-ai.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "private-ai-deid.selectorLabels" . | nindent 4 }}
+    {{- include "private-ai.selectorLabels" . | nindent 4 }}

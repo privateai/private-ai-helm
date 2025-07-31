@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "private-ai-deid.fullname" . }}
+  name: {{ include "private-ai.fullname" . }}
 spec:
   ingressClassName: {{ .Values.ingress.ingressClassName }}
   rules:
@@ -13,7 +13,7 @@ spec:
         paths:
           - backend:
               service:
-                name: {{ include "private-ai-deid.fullname" $ }}
+                name: {{ include "private-ai.fullname" $ }}
                 port:
                   number: {{ $.Values.service.port }}
             path: {{ $path.path }}

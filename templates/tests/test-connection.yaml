@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "private-ai-deid.fullname" . }}-test-connection"
+  name: "{{ include "private-ai.fullname" . }}-test-connection"
   labels:
-    {{- include "private-ai-deid.labels" . | nindent 4 }}
+    {{- include "private-ai.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test
 spec:
@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "private-ai-deid.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "private-ai.fullname" . }}:{{ .Values.service.port }}']
   restartPolicy: Never

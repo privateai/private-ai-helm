@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "private-ai-deid.fullname" . }}
+  name: {{ include "private-ai.fullname" . }}
   labels:
-    {{- include "private-ai-deid.labels" . | nindent 4 }}
+    {{- include "private-ai.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "private-ai-deid.selectorLabels" . | nindent 6 }}
+      {{- include "private-ai.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -16,7 +16,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "private-ai-deid.selectorLabels" . | nindent 8 }}
+        {{- include "private-ai.selectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ .Values.serviceAccount.name}}
       {{- with .Values.imagePullSecrets }}

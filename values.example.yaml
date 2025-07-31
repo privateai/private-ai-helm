@@ -1,37 +1,29 @@
 replicaCount: 1
 
 image:
-  repository: crprivateaiprod.azurecr.io/deid
-  pullPolicy: IfNotPresent
+  repository: "crprivateaiprod.azurecr.io/deid"
+  pullPolicy: "IfNotPresent"
   # Can be a direct version tag / container flavour (i.e. 3.3.2-cpu) OR a 'latest' tag (i.e. cpu, gpu)
-  tag: "cpu"
+  tag: "4.0.4-cpu"
 
 # Change this to true if you have a cluster that has nodes with Nvidia GPUs available and would like to run the GPU container
 gpuEnabled: false
 
 imagePullSecrets:
   # Rename this to whatever you stored your CR Creds for the Private AI CR Kube secret to
-  - name: crprivateaiprod-creds
-  # - name: ecrcred
+  - name: "crprivateaiprod-creds"
+
 nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
   create: false
-  annotations: {}
-  name: ""
-
-selectorLabels:
-  - app: pai-deployment
+  name: "private-ai"
 
 podAnnotations: {}
 
-podSecurityContext: {}
-
-securityContext: {}
-
 service:
-  type: LoadBalancer
+  type: "LoadBalancer"
   port: 80
   targetPort: 8080
   periodSeconds: 60
@@ -39,27 +31,13 @@ service:
   timeoutSeconds: 10
 
 license:
-  name: pai-license
-  volumeMount: license-volume
-  mountPath: /app/license
+  name: "pai-license"
+  volumeMount: "license-volume"
+  mountPath: "/app/license"
 
 envVars:
-  # - name: PAI_DISABLE_RAM_CHECK
+  # - name: "PAI_DISABLE_RAM_CHECK"
   #   value: "true"
-
-resources: {}
-
-autoscaling:
-  enabled: true
-  minReplicas: 1
-  maxReplicas: 3
-  targetCPUUtilizationPercentage: 80
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
 
 ingress:
   enabled: false

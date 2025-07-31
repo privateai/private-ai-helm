@@ -1,2 +1,2 @@
-# Don't allow checking of a specific environment
-values.yaml
+# Don't allow checking in a specific environment
+values.yaml*
