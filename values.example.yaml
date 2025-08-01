@@ -16,10 +16,6 @@ imagePullSecrets:
 nameOverride: ""
 fullnameOverride: ""
 
-serviceAccount:
-  create: false
-  name: "private-ai"
-
 podAnnotations: {}
 
 service:
