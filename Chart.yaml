@@ -12,12 +12,12 @@ icon: https://cdn.prod.website-files.com/6682257d9fc729d59a7f121b/66cba74e2ef9cb
 
 dependencies:
   - name: cert-manager
-    repository: https://charts.jetstack.io
-    version: ~1.18
+    repository: oci://quay.io/jetstack/charts
+    version: v1.18.2
     alias: certmanager
     condition: certmanager.enabled
   - name: ingress-nginx
     repository: https://kubernetes.github.io/ingress-nginx
-    version: ~4.13
+    version: 4.13.0
     alias: ingressnginx
     condition: ingressnginx.enabled
