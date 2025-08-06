@@ -1,3 +1,6 @@
+# Select a cloud provider. Must be one of "Azure" or "AWS"
+cloudProvider: "Azure"
+
 replicaCount: 1
 
 image:
@@ -35,16 +38,33 @@ envVars:
   # - name: "PAI_DISABLE_RAM_CHECK"
   #   value: "true"
 
+# Configuration for the cert-manager subchart
+certmanager:
+  enabled: false
+  namespace: "cert-manager"
+  clusterResourceNamespace: "private-ai"
+  crds:
+    enabled: true
+  webhook:
+    # Required for AWS VPC-CNI pluggin
+    hostNetwork: true
+    securePort: 10255
+
+# Configuration for the ingress-nginx subchart
+ingressnginx:
+  enabled: false
+  # Azure load balancer settings
+  controller:
+    service:
+      annotations:
+        service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: "/healthz"
+      externalTrafficPolicy: "Local"
+
+# Specifies whether to deploy the kubernetes ingress
+# Requires ingress-nginx and cert-manager to be installed
 ingress:
   enabled: false
-  ingressClassName: nginx
-  # Replace this with the domain name for the ingress
-  hosts:
-    - host: ingress.domain.com
-      paths:
-        - path: /
-          pathType: Prefix
-  # Create a kubernetes secret with the TLS certificate matching the domain name
-  tls:
-    - host: ingress.domain.com
-      sslSecret: private-ai-tls
+
+# Replace this with the domain name for the ingress
+host: "ingress.domain.com"
+sslSecret: "private-ai-tls"

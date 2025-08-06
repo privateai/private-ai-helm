@@ -1,29 +1,23 @@
-{{- if ((.Values.ingress).enabled) }}
+{{- if .Values.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "private-ai.fullname" . }}
 spec:
-  ingressClassName: {{ .Values.ingress.ingressClassName }}
+  ingressClassName: "nginx"
   rules:
-  {{- range $host := .Values.ingress.hosts }}
-    - host: {{ $host.host }}
+    - host: {{ .Values.host }}
       http:
-        {{- range $path := $host.paths }}
         paths:
           - backend:
               service:
-                name: {{ include "private-ai.fullname" $ }}
+                name: {{ include "private-ai.fullname" . }}
                 port:
-                  number: {{ $.Values.service.port }}
-            path: {{ $path.path }}
-            pathType: {{ $path.pathType }}
-        {{- end }}
-  {{- end }}
-  {{- range $tls := .Values.ingress.tls }}
+                  number: {{ .Values.service.port }}
+            path: "/"
+            pathType: "Prefix"
   tls:
     - hosts:
-      - {{ $tls.host }}
-      secretName: {{ $tls.sslSecret }}
-  {{- end }}
+      - {{ .Values.host }}
+      secretName: {{ .Values.sslSecret }}
 {{- end }}
