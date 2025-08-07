@@ -10,7 +10,8 @@
             "type": "string",
             "enum": [
                 "AWS",
-                "Azure"
+                "Azure",
+                "Other"
             ]
         }
     }

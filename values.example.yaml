@@ -1,4 +1,4 @@
-# Select a cloud provider. Must be one of "Azure" or "AWS"
+# Select a cloud provider. Must be one of "Azure", "AWS", or "Other"
 cloudProvider: "Azure"
 
 replicaCount: 1
