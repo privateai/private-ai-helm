@@ -1,8 +1,8 @@
 Successfully installed {{ .Release.Name }} version {{ .Chart.AppVersion }}
 {{- if .Values.ingress.enabled }}
 To test the ingress connectivity, run the following
-      curl http{{ if .Values.ingress.tls }}s{{ end }}://{{ .Values.host }}/
-{{- else if contains "LoadBalancer" .Values.service.type }}
+      curl {{ if .Values.ingress.selfsigned }}-k {{ end }}http{{ if .Values.ingress.tls }}s{{ end }}://{{ .Values.ingress.host }}/
+{{- else if eq "LoadBalancer" .Values.service.type }}
 NOTE: It can take a few minutes to download and start the container.
 To get the status of the container, run the following
       'kubectl --namespace {{ .Release.Namespace }} get pods'
@@ -10,9 +10,9 @@ NOTE: It may take a few minutes for the LoadBalancer IP to be available.
 To get the status of the load balancer, run the following
       'kubectl --namespace {{ .Release.Namespace }} get service {{ include "private-ai.fullname" . }}'
 To test the service connectivity, run the following
-  {{- if contains "AWS" .Values.cloudProvider }}
+  {{- if eq "AWS" .Values.cloudProvider }}
       export SERVICE_IP=$(kubectl get service --namespace {{ .Release.Namespace }} {{ include "private-ai.fullname" . }} --template "{{"{{ range .status.loadBalancer.ingress }}{{ .hostname }}{{ end }}"}}")
-  {{- else if contains "Azure" .Values.cloudProvder }}
+  {{- else if eq "Azure" .Values.cloudProvder }}
       export SERVICE_IP=$(kubectl get service --namespace {{ .Release.Namespace }} {{ include "private-ai.fullname" . }} --template "{{"{{ range .status.loadBalancer.ingress }}{{ .ip }}{{ end }}"}}")
   {{- end }}
       curl http://$SERVICE_IP:{{ .Values.service.port }}

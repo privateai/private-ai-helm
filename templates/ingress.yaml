@@ -6,7 +6,7 @@ metadata:
 spec:
   ingressClassName: "nginx"
   rules:
-    - host: {{ .Values.host }}
+    - host: {{ .Values.ingress.host }}
       http:
         paths:
           - backend:
@@ -18,6 +18,6 @@ spec:
             pathType: "Prefix"
   tls:
     - hosts:
-      - {{ .Values.host }}
-      secretName: {{ .Values.sslSecret }}
+      - {{ .Values.ingress.host }}
+      secretName: {{ .Values.ingress.tlsSecretName }}
 {{- end }}

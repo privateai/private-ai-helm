@@ -1,15 +1,19 @@
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1
+kind: Job
 metadata:
   name: '{{ include "private-ai.fullname" . }}-test-connection'
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "private-ai.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test
 spec:
-  containers:
-    - name: wget
-      image: busybox
-      command: ['wget']
-      args: ['{{ include "private-ai.fullname" . }}:{{ .Values.service.port }}']
-  restartPolicy: Never
+  ttlSecondsAfterFinished: 0
+  template:
+    spec:
+      containers:
+        - name: wget
+          image: busybox
+          command: ['wget']
+          args: ['{{ include "private-ai.fullname" . }}:{{ .Values.service.port }}']
+      restartPolicy: Never
