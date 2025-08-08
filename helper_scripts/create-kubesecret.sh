@@ -6,4 +6,4 @@ kubectl create secret docker-registry crprivateaiprod-creds \
     --docker-server=crprivateaiprod.azurecr.io \
     --docker-username=USERNAME \
     --docker-password=PASSWORD \
-    --namespace NAMESPACENAME
+    --namespace private-ai

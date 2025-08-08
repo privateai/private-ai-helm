@@ -1,0 +1,12 @@
+{{- if and .Values.certmanager.enabled .Values.ingress.selfsigned }}
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "2"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  selfSigned: {}
+{{- end }}

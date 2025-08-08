@@ -1,3 +1,6 @@
+# Select a cloud provider. Must be one of "Azure", "AWS", or "Other"
+cloudProvider: "Azure"
+
 replicaCount: 1
 
 image:
@@ -31,20 +34,45 @@ license:
   volumeMount: "license-volume"
   mountPath: "/app/license"
 
-envVars:
+envVars: []
   # - name: "PAI_DISABLE_RAM_CHECK"
   #   value: "true"
 
+# Configuration for the cert-manager subchart
+certmanager:
+  enabled: false
+  namespace: "cert-manager"
+  clusterResourceNamespace: "private-ai"
+  crds:
+    enabled: true
+    # Change keep flag to false if you would like helm to remove the cert-manager CRDs on uninstall
+    keep: true
+  # Required webhook settings if deploying to AWS with the VPC-CNI pluggin
+  # webhook:
+  #   hostNetwork: true
+  #   securePort: 10255
+
+# Configuration for the ingress-nginx subchart
+ingressnginx:
+  enabled: false
+  # Azure load balancer settings for the internal Private AI service
+  # controller:
+  #   service:
+  #     annotations:
+  #       service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: "/healthz"
+  #     externalTrafficPolicy: "Local"
+  # AWS load balancer setting for the internal Private AI service
+  # controller:
+  #   service:
+  #     internal:
+  #       enabled: true
+  #       annotations:
+  #         service.beta.kubernetes.io/aws-load-balancer-scheme: "internal"
+
+# Specifies whether to deploy the kubernetes ingress
+# Requires ingress-nginx and cert-manager to be installed
 ingress:
   enabled: false
-  ingressClassName: nginx
   # Replace this with the domain name for the ingress
-  hosts:
-    - host: ingress.domain.com
-      paths:
-        - path: /
-          pathType: Prefix
-  # Create a kubernetes secret with the TLS certificate matching the domain name
-  tls:
-    - host: ingress.domain.com
-      sslSecret: private-ai-tls
+  host: "ingress.domain.com"
+  tlsSecretName: "private-ai-tls"

@@ -1,0 +1,24 @@
+{{- if and .Values.certmanager.enabled .Values.ingress.selfsigned }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: selfsigned
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "2"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  secretName: {{ .Values.ingress.tlsSecretName }}
+  privateKey:
+    rotationPolicy: Always
+  commonName: {{ .Values.ingress.host }}
+  dnsNames:
+    - {{ .Values.ingress.host }}
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+  issuerRef:
+    name: selfsigned
+    kind: ClusterIssuer
+{{- end }}

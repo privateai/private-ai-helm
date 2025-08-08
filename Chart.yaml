@@ -7,3 +7,17 @@ version: 1.0.0
 # This is the default version deployed by the chart.
 # However, this is simply a label - if you wish to change the version, update your values.yaml
 appVersion: "4.0.4-cpu"
+
+icon: https://cdn.prod.website-files.com/6682257d9fc729d59a7f121b/66cba74e2ef9cbe1c20e261c_favicon.png
+
+dependencies:
+  - name: cert-manager
+    repository: oci://quay.io/jetstack/charts
+    version: v1.18.2
+    alias: certmanager
+    condition: certmanager.enabled
+  - name: ingress-nginx
+    repository: https://kubernetes.github.io/ingress-nginx
+    version: 4.13.0
+    alias: ingressnginx
+    condition: ingressnginx.enabled
