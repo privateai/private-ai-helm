@@ -2,17 +2,22 @@
     "$schema": "https://json-schema.org/draft/2019-09/schema",
     "type": "object",
     "title": "Root Schema",
-    "required": [
-        "cloudProvider"
-    ],
     "properties": {
-        "cloudProvider": {
-            "type": "string",
-            "enum": [
-                "AWS",
-                "Azure",
-                "Other"
-            ]
+        "ingress": {
+            "type": "object",
+            "required": [
+                "cloudProvider"
+            ],
+            "properties": {
+                "cloudProvider": {
+                    "type": "string",
+                    "enum": [
+                        "AWS",
+                        "Azure",
+                        "Other"
+                    ]
+                }
+            }
         }
     }
 }

@@ -10,9 +10,9 @@ NOTE: It may take a few minutes for the LoadBalancer IP to be available.
 To get the status of the load balancer, run the following
       'kubectl --namespace {{ .Release.Namespace }} get service {{ include "private-ai.fullname" . }}'
 To test the service connectivity, run the following
-  {{- if eq "AWS" .Values.cloudProvider }}
+  {{- if eq "AWS" .Values.ingress.cloudProvider }}
       export SERVICE_IP=$(kubectl get service --namespace {{ .Release.Namespace }} {{ include "private-ai.fullname" . }} --template "{{"{{ range .status.loadBalancer.ingress }}{{ .hostname }}{{ end }}"}}")
-  {{- else if eq "Azure" .Values.cloudProvder }}
+  {{- else if eq "Azure" .Values.ingress.cloudProvder }}
       export SERVICE_IP=$(kubectl get service --namespace {{ .Release.Namespace }} {{ include "private-ai.fullname" . }} --template "{{"{{ range .status.loadBalancer.ingress }}{{ .ip }}{{ end }}"}}")
   {{- end }}
       curl http://$SERVICE_IP:{{ .Values.service.port }}
