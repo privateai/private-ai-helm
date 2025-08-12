@@ -15,8 +15,8 @@ Please keep in mind that for deployments requiring a public facing endpoint, you
 To install the Private AI chart, follow the steps below.
 
 ```console
-# Make a copy of the values.example.yaml file to values.yaml.
-cp values.example.yaml values.yaml
+# Make sure you place your license file in your current directory
+cp /path/to/license.json ./license.json
 
 # Create a namespace in your cluster for the private-ai deployment
 kubectl create namespace private-ai
