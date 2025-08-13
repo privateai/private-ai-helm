@@ -10,4 +10,5 @@
 - [ ] Tested by Github CI
 
 ## Checklist
-- [ ] Update chart version (planning a release?)
+- [ ] Update chart version if planning a release
+- [ ] Update README.md
