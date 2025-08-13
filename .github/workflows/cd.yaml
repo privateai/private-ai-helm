@@ -1,9 +1,12 @@
 name: Continuous Deployment
 
 on:
-  release:
-    types:
-      - released
+  # release:
+  #   types:
+  #     - released
+  pull_request:
+    branches:
+      - main
 
 jobs:
   deploy:
