@@ -30,8 +30,16 @@ helm registry login crprivateaiprod.azurecr.io
 # Optional - View and change the default helm values to customize your deployment. Add -f values.yaml.custom to the next command
 helm show values crprivateaiprod.azurecr.io/helm/private-ai:1.2.0 > values.yaml.custom
 
+# Create a license values file from your license.json to enable the pod to startup successfully
+echo "license:\n  data: '$(cat license.json)'" > license.yaml
+
 # Upgrade or install the Private AI chart with a name and namespace of private-ai
-helm upgrade --install --namespace private-ai private-ai crprivateaiprod.azurecr.io/helm/private-ai:1.2.0
+helm upgrade --install \
+--namespace private-ai \
+private-ai \
+-f license.yaml \
+oci://crprivateaiprod.azurecr.io/helm/private-ai \
+--version 1.2.0
 ```
 
 ## Testing

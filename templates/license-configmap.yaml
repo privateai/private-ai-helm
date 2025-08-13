@@ -4,4 +4,4 @@ metadata:
   name: pai-license
 data:
   license.info: |-
-    {{- $.Files.Get "license.json" | nindent 6 -}}
+{{- .Values.license.data | nindent 4 }}

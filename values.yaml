@@ -1,3 +1,6 @@
+# Select a cloud provider. Must be one of "Azure", "AWS", or "Other"
+cloudProvider: "Azure"
+
 replicaCount: 1
 
 image:
@@ -30,6 +33,7 @@ license:
   name: "pai-license"
   volumeMount: "license-volume"
   mountPath: "/app/license"
+  data: "Override with your license data. See readme for more details"
 
 envVars: []
   # Enter any environment variables for your deployment. You can find the list at https://docs.private-ai.com/environment-variables/
@@ -71,8 +75,6 @@ ingressnginx:
 # Requires ingress-nginx and cert-manager to be installed
 ingress:
   enabled: false
-  # Select a cloud provider. Must be one of "Azure", "AWS", or "Other"
-  cloudProvider: "Azure"
   # Replace this with the domain name for the ingress
   host: "ingress.domain.com"
   tlsSecretName: "private-ai-tls"
