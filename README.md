@@ -24,11 +24,14 @@ kubectl create namespace private-ai
 # Update the helper script create-kubesecret.sh with your docker login credentials and then run it with the command below
 sh helper_scripts/create-kubesecret.sh
 
-# Get the helm dependencies
-helm dependency update
+# Login to the helm registry with your docker credentials
+helm registry login crprivateaiprod.azurecr.io
+
+# Optional - View and change the default helm values to customize your deployment. Add -f values.yaml.custom to the next command
+helm show values crprivateaiprod.azurecr.io/helm/private-ai:1.2.0 > values.yaml.custom
 
 # Upgrade or install the Private AI chart with a name and namespace of private-ai
-helm upgrade --install --namespace private-ai private-ai .
+helm upgrade --install --namespace private-ai private-ai crprivateaiprod.azurecr.io/helm/private-ai:1.2.0
 ```
 
 ## Testing
