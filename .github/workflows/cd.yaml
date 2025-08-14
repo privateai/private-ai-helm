@@ -23,7 +23,7 @@ jobs:
         with:
           name: private-ai
           repository: helm
-          tag: '${{ github.ref }}'
+          tag: '${{ github.ref_name }}'
           registry: crprivateaiprod.azurecr.io
           registry_username: ${{ secrets.AZURECR_USERNAME }}
           registry_password: ${{ secrets.AZURECR_PASSWORD }}
