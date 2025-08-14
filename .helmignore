@@ -23,3 +23,5 @@
 .vscode/
 # Project specific
 helper_scripts/
+.github
+values.yaml.*

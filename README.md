@@ -15,8 +15,8 @@ Please keep in mind that for deployments requiring a public facing endpoint, you
 To install the Private AI chart, follow the steps below.
 
 ```console
-# Make a copy of the values.example.yaml file to values.yaml.
-cp values.example.yaml values.yaml
+# Make sure you place your license file in your current directory
+cp /path/to/license.json ./license.json
 
 # Create a namespace in your cluster for the private-ai deployment
 kubectl create namespace private-ai
@@ -24,11 +24,22 @@ kubectl create namespace private-ai
 # Update the helper script create-kubesecret.sh with your docker login credentials and then run it with the command below
 sh helper_scripts/create-kubesecret.sh
 
-# Get the helm dependencies
-helm dependency update
+# Login to the helm registry with your docker credentials
+helm registry login crprivateaiprod.azurecr.io
+
+# Optional - View and change the default helm values to customize your deployment. Add -f values.yaml.custom to the next command
+helm show values crprivateaiprod.azurecr.io/helm/private-ai:1.2.0 > values.yaml.custom
+
+# Create a license values file from your license.json to enable the pod to startup successfully
+echo -e "license:\n  data: '$(cat license.json)'" > license.yaml
 
 # Upgrade or install the Private AI chart with a name and namespace of private-ai
-helm upgrade --install --namespace private-ai private-ai .
+helm upgrade --install \
+--namespace private-ai \
+private-ai \
+-f license.yaml \
+oci://crprivateaiprod.azurecr.io/helm/private-ai \
+--version 1.2.0
 ```
 
 ## Testing

@@ -6,14 +6,14 @@ replicaCount: 1
 image:
   repository: "crprivateaiprod.azurecr.io/deid"
   pullPolicy: "IfNotPresent"
-  # Can be a direct version tag / container flavour (i.e. 3.3.2-cpu) OR a 'latest' tag (i.e. cpu, gpu)
-  tag: "4.0.4-cpu"
+  # Can be a direct version tag / container flavour (i.e. 4.0.4-cpu-text) OR a 'latest' tag (i.e. cpu, cpu-text, gpu, gpu-text)
+  tag: "4.1.0-cpu"
 
 # Change this to true if you have a cluster that has nodes with Nvidia GPUs available and would like to run the GPU container
 gpuEnabled: false
 
 imagePullSecrets:
-  # Rename this to whatever you stored your CR Creds for the Private AI CR Kube secret to
+  # This secret will store your docker pull credentials. You can obtain these from the customer portal
   - name: "crprivateaiprod-creds"
 
 nameOverride: ""
@@ -33,8 +33,10 @@ license:
   name: "pai-license"
   volumeMount: "license-volume"
   mountPath: "/app/license"
+  data: "Override with your license data. See readme for more details"
 
 envVars: []
+  # Enter any environment variables for your deployment. You can find the list at https://docs.private-ai.com/environment-variables/
   # - name: "PAI_DISABLE_RAM_CHECK"
   #   value: "true"
 

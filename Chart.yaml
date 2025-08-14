@@ -2,11 +2,11 @@ apiVersion: v2
 name: private-ai
 description: A Helm chart that deploys the Private AI deidentification solution
 
-version: 1.1.1
+version: 1.2.0
 
 # This is the default version deployed by the chart.
 # However, this is simply a label - if you wish to change the version, update your values.yaml
-appVersion: "4.0.4-cpu"
+appVersion: "4.1.0-cpu"
 
 icon: https://cdn.prod.website-files.com/6682257d9fc729d59a7f121b/66cba74e2ef9cbe1c20e261c_favicon.png
 

@@ -3,12 +3,15 @@ Successfully installed {{ .Release.Name }} version {{ .Chart.AppVersion }}
 To test the ingress connectivity, run the following
       curl {{ if .Values.ingress.selfsigned }}-k {{ end }}http{{ if .Values.ingress.tls }}s{{ end }}://{{ .Values.ingress.host }}/
 {{- else if eq "LoadBalancer" .Values.service.type }}
+
 NOTE: It can take a few minutes to download and start the container.
 To get the status of the container, run the following
-      'kubectl --namespace {{ .Release.Namespace }} get pods'
+      kubectl --namespace {{ .Release.Namespace }} get pods
+
 NOTE: It may take a few minutes for the LoadBalancer IP to be available.
 To get the status of the load balancer, run the following
-      'kubectl --namespace {{ .Release.Namespace }} get service {{ include "private-ai.fullname" . }}'
+      kubectl --namespace {{ .Release.Namespace }} get service {{ include "private-ai.fullname" . }}
+
 To test the service connectivity, run the following
   {{- if eq "AWS" .Values.cloudProvider }}
       export SERVICE_IP=$(kubectl get service --namespace {{ .Release.Namespace }} {{ include "private-ai.fullname" . }} --template "{{"{{ range .status.loadBalancer.ingress }}{{ .hostname }}{{ end }}"}}")
