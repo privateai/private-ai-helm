@@ -1,12 +1,9 @@
 name: Continuous Deployment
 
 on:
-  # release:
-  #   types:
-  #     - released
-  pull_request:
-    branches:
-      - main
+  release:
+    types:
+      - released
 
 jobs:
   deploy:
@@ -26,8 +23,7 @@ jobs:
         with:
           name: private-ai
           repository: helm
-          # tag: '${{ github.ref_name }}'
-          tag: '1.2.1'
+          tag: '${{ github.ref_name }}'
           registry: crprivateaiprod.azurecr.io
           registry_username: ${{ secrets.AZURECR_USERNAME }}
           registry_password: ${{ secrets.AZURECR_PASSWORD }}
