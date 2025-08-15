@@ -79,6 +79,9 @@ ingress:
   ingressClassName: "nginx"
   # Set your own custom annotations
   annotations: {}
+  # annotations: {
+  #   alb.ingress.kubernetes.io/ip-address-type: "ipv4"
+  # }
   # Provision selfsigned certificates by default. Change if you wish to customize
   selfsigned: true
   # Replace this with the domain name for the ingress
