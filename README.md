@@ -28,7 +28,7 @@ sh helper_scripts/create-kubesecret.sh
 helm registry login crprivateaiprod.azurecr.io
 
 # Create a custom values file for your specific installation
-helm show values oci://crprivateaiprod.azurecr.io/helm/private-ai:1.2.2 > values.yaml.custom
+helm show values oci://crprivateaiprod.azurecr.io/helm/private-ai:1.2.3 > values.yaml.custom
 
 # Copy your license.json file and paste it into license.data with single quotes surrounding, as per below
 license:
@@ -40,7 +40,7 @@ helm upgrade --install \
 private-ai \
 -f values.yaml.custom \
 oci://crprivateaiprod.azurecr.io/helm/private-ai \
---version 1.2.2
+--version 1.2.3
 ```
 
 ## Testing
