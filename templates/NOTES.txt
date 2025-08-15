@@ -1,7 +1,7 @@
 Successfully installed {{ .Release.Name }} version {{ .Chart.AppVersion }}
 {{- if .Values.ingress.enabled }}
 To test the ingress connectivity, run the following
-      curl {{ if .Values.ingress.selfsigned }}-k {{ end }}http{{ if .Values.ingress.tls }}s{{ end }}://{{ .Values.ingress.host }}/
+      curl {{ if .Values.ingress.selfsigned }}-k {{ end }}https://{{ .Values.ingress.host }}/
 {{- else if eq "LoadBalancer" .Values.service.type }}
 
 NOTE: It can take a few minutes to download and start the container.

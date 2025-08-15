@@ -27,19 +27,20 @@ sh helper_scripts/create-kubesecret.sh
 # Login to the helm registry with your docker credentials
 helm registry login crprivateaiprod.azurecr.io
 
-# Optional - View and change the default helm values to customize your deployment. Add -f values.yaml.custom to the next command
-helm show values oci://crprivateaiprod.azurecr.io/helm/private-ai:1.2.1 > values.yaml.custom
+# Create a custom values file for your specific installation
+helm show values oci://crprivateaiprod.azurecr.io/helm/private-ai:1.2.2 > values.yaml.custom
 
-# Create a license values file from your license.json to enable the pod to startup successfully
-echo -e "license:\n  data: '$(cat license.json)'" > license.yaml
+# Copy your license.json file and paste it into license.data with single quotes surrounding, as per below
+license:
+  data: '{"id":"..."}'
 
 # Upgrade or install the Private AI chart with a name and namespace of private-ai
 helm upgrade --install \
 --namespace private-ai \
 private-ai \
--f license.yaml \
+-f values.yaml.custom \
 oci://crprivateaiprod.azurecr.io/helm/private-ai \
---version 1.2.1
+--version 1.2.2
 ```
 
 ## Testing

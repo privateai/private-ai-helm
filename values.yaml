@@ -33,7 +33,7 @@ license:
   name: "pai-license"
   volumeMount: "license-volume"
   mountPath: "/app/license"
-  data: "Override with your license data. See readme for more details"
+  data: 'Override with your license data. See readme for more details'
 
 envVars: []
   # Enter any environment variables for your deployment. You can find the list at https://docs.private-ai.com/environment-variables/
@@ -75,6 +75,8 @@ ingressnginx:
 # Requires ingress-nginx and cert-manager to be installed
 ingress:
   enabled: false
+  # Provision selfsigned certificates by default. Change if you wish to customize
+  selfsigned: true
   # Replace this with the domain name for the ingress
   host: "ingress.domain.com"
   tlsSecretName: "private-ai-tls"
