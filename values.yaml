@@ -75,6 +75,10 @@ ingressnginx:
 # Requires ingress-nginx and cert-manager to be installed
 ingress:
   enabled: false
+  # Set the class to handle the ingress traffic. Default to nginx
+  ingressClassName: "nginx"
+  # Set your own custom annotations
+  annotations: {}
   # Provision selfsigned certificates by default. Change if you wish to customize
   selfsigned: true
   # Replace this with the domain name for the ingress
