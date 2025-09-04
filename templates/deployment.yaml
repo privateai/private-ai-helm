@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "private-ai.fullname" . }}
+  namespace: {{ .Values.namespace }}
   labels:
     {{- include "private-ai.labels" . | nindent 4 }}
 spec:
@@ -18,10 +19,8 @@ spec:
       labels:
         {{- include "private-ai.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}      
+        - name: {{ .Values.imagePullSecrets.name }}
       containers:
         - name: {{ .Chart.Name }}          
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -41,11 +40,11 @@ spec:
           {{- end }}
           volumeMounts:
             - name: {{ .Values.license.volumeMount }}
-              mountPath: {{ .Values.license.mountPath }}
-            {{- if .Values.gpuEnabled }}
+              mountPath: /app/license
+          {{- if .Values.gpuEnabled }}
             - name: dshm-volume
               mountPath: /dev/shm
-            {{- end }}
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -55,13 +54,10 @@ spec:
             timeoutSeconds: {{ .Values.service.timeoutSeconds }}
       volumes:
         - name: {{ .Values.license.volumeMount }}
-          configMap:
-            name: {{ .Values.license.name }}
-            items:
-              - key: license.info
-                path: license.json
-        {{- if .Values.gpuEnabled }}
+          secret:
+            secretName: {{ .Values.license.name }}
+      {{- if .Values.gpuEnabled }}
         - name: dshm-volume
           emptyDir:
             medium: Memory
-        {{- end }}
+      {{- end }}

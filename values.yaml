@@ -1,12 +1,17 @@
 # Select a cloud provider. Must be one of "Azure", "AWS", or "Other"
 cloudProvider: "Azure"
 
+# Sets the number of replicas for the Private AI deployment
 replicaCount: 1
+
+# Specify the namespace for the kubernetes objects
+namespace: "private-ai"
 
 image:
   repository: "crprivateaiprod.azurecr.io/deid"
   pullPolicy: "IfNotPresent"
   # Can be a direct version tag / container flavour (i.e. 4.0.4-cpu-text) OR a 'latest' tag (i.e. cpu, cpu-text, gpu, gpu-text)
+  # It is recommended to pin to a specific version for production environments
   tag: "4.1.0-cpu"
 
 # Change this to true if you have a cluster that has nodes with Nvidia GPUs available and would like to run the GPU container
@@ -14,7 +19,8 @@ gpuEnabled: false
 
 imagePullSecrets:
   # This secret will store your docker pull credentials. You can obtain these from the customer portal
-  - name: "crprivateaiprod-creds"
+  # If you enable the External Secrets Operator, this will also be the name of the secret objects
+  name: "crprivateaiprod-creds"
 
 nameOverride: ""
 fullnameOverride: ""
@@ -29,10 +35,13 @@ service:
   initialDelaySeconds: 120
   timeoutSeconds: 10
 
+# Settings for the Private AI license file
 license:
+  # Sets the name of the license
+  # If you enable the External Secrets Operator, this will also be the name of the secret objects
   name: "pai-license"
   volumeMount: "license-volume"
-  mountPath: "/app/license"
+  # If you use the External Secret Operator, you can ignore this setting as the license file will be populated via a secret
   data: 'Override with your license data. See readme for more details'
 
 envVars: []
@@ -87,3 +96,40 @@ ingress:
   # Replace this with the domain name for the ingress
   host: "ingress.domain.com"
   tlsSecretName: "private-ai-tls"
+
+# Specifies whether to deploy the external secrets operator
+externalsecrets:
+  enabled: false
+  # Specifies the cluster secret store to retrieve secrets
+  # Cluster secret stores have the ability to create external secrets that are namespaced
+  # For simplicity, it is assumed to be the same store for all secrets
+  clustersecretstorename: "cluster-secret-store"
+  # Specifies the namespaces to provision the secrets
+  # Secrets will be created in all namespaces with labels that match
+  namespaceSelectors:
+    - matchLabels:
+        app: "private-ai"
+  # Will create the secrets in namespaces that have labels that match the below
+  # Refer to the readme for instructions on adding labels to namespaces
+  namespaceSelectors:
+    - matchLabels:
+        app: "private-ai"
+  # How often the cluster external secret will check to ensure the secret exists in the matching namespaces 
+  refreshTime: "1m"
+  # Configuration details for the docker credentials secret
+  dockercredential:
+    # Set the refresh interval to check for updated secrets
+    refreshInterval: "1h"
+    # This is the reference to the name of the secret from the secret store
+    # For simplicity, it is assumed that all the credentials are in the same key, in different properties
+    remoteRefKey: "crprivateaiprod-creds"
+    serverProperty: "server"
+    usernameProperty: "username"
+    passwordProperty: "password"
+  # Configuration details for the license file
+  license:
+    # Set the refresh interval to check for updated secrets
+    refreshInterval: "1h"
+    # This is the reference to the name of the secret from the secret store
+    remoteRefKey: "license"
+    licenseProperty: "license.json"

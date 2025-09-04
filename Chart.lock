@@ -5,5 +5,8 @@ dependencies:
 - name: ingress-nginx
   repository: https://kubernetes.github.io/ingress-nginx
   version: 4.13.2
-digest: sha256:6a3177ce8a920873b83162bbae86f40ce0c9b3015934ce0ad11186181a39989a
-generated: "2025-09-01T03:24:05.378785069Z"
+- name: external-secrets
+  repository: https://charts.external-secrets.io
+  version: 0.19.2
+digest: sha256:99d54b0180e46afbb6f1b7f6398d5fb099ee3202325704c86e62a31bb864b02d
+generated: "2025-09-03T12:04:30.472626-04:00"
