@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "private-ai.fullname" . }}
-  namespace: {{ .Values.namespace }}
   labels:
     {{- include "private-ai.labels" . | nindent 4 }}
 spec:

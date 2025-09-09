@@ -21,8 +21,3 @@ dependencies:
     version: 4.13.2
     alias: ingressnginx
     condition: ingressnginx.enabled
-  - name: external-secrets
-    repository: https://charts.external-secrets.io
-    version: 0.19.2
-    alias: externalsecrets
-    condition: externalsecrets.enabled
