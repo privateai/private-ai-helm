@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: pai-license
-data:
-  license.info: |-
-{{- .Values.license.data | nindent 4 }}
