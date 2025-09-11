@@ -38,13 +38,25 @@ license:
   # If you enable the External Secrets Operator, this will also be the name of the secret objects
   name: "pai-license"
   volumeMount: "license-volume"
-  # If you use the External Secret Operator, you can ignore this setting as the license file will be populated via a secret
+  # If you use the External Secrets Operator, you can ignore this setting as the license file will be populated via a secret
   data: 'Override with your license data. See readme for more details'
 
 envVars: []
   # Enter any environment variables for your deployment. You can find the list at https://docs.private-ai.com/environment-variables/
   # - name: "PAI_DISABLE_RAM_CHECK"
   #   value: "true"
+
+# Configuration options for adding a kubernetes secret
+# This secret will be added to the environment variable for the Private AI deployment
+secrets:
+  # Sets the name for the secrets
+  # If you use the External Secrets Operator, this will also be the name of the secrets object
+  name: "pai-secrets"
+  # If you use the External Secrets Operator, you can ignore this section and populate via the externalsecrets section below
+  data: []
+  # Enter any environment variables for your deployment you wish to remain secret. Examples: https://docs.private-ai.com/azure-ocr/
+    # - name: "PAI_AZ_COMPUTER_VISION_KEY"
+    #   value: "keyvalue"
 
 # Configuration for the cert-manager subchart
 certmanager:
