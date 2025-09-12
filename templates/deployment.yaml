@@ -50,8 +50,22 @@ spec:
             httpGet:
               path: /healthz
               port: {{ .Values.service.targetPort }}
-            periodSeconds: {{ .Values.service.periodSeconds }}
-            initialDelaySeconds: {{ .Values.service.initialDelaySeconds }}
+            periodSeconds: {{ .Values.service.livenessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.service.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.service.timeoutSeconds }}
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: {{ .Values.service.targetPort }}
+            periodSeconds: {{ .Values.service.startupProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.service.startupProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.service.timeoutSeconds }}
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: {{ .Values.service.targetPort }}
+            periodSeconds: {{ .Values.service.readinessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.service.readinessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.service.timeoutSeconds }}
       volumes:
         - name: {{ .Values.license.volumeMount }}

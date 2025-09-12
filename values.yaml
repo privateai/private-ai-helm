@@ -25,9 +25,16 @@ service:
   type: "LoadBalancer"
   port: 80
   targetPort: 8080
-  periodSeconds: 60
-  initialDelaySeconds: 120
   timeoutSeconds: 10
+  livenessProbe:
+    initialDelaySeconds: 120
+    periodSeconds: 1800
+  startupProbe:
+    initialDelaySeconds: 60
+    periodSeconds: 10
+  readinessProbe:
+    initialDelaySeconds: 60
+    periodSeconds: 60
 
 license:
   name: "pai-license"
