@@ -26,15 +26,23 @@ service:
   port: 80
   targetPort: 8080
   timeoutSeconds: 10
+  # These are the values for liveness, startup and readiness probes.
+  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#probe-v1-core
   livenessProbe:
+    enabled: False
     initialDelaySeconds: 120
     periodSeconds: 1800
+    failureThreshold: 3
   startupProbe:
+    enabled: True
     initialDelaySeconds: 60
     periodSeconds: 10
+    failureThreshold: 3
   readinessProbe:
+    enabled: True
     initialDelaySeconds: 60
     periodSeconds: 60
+    failureThreshold: 3
 
 license:
   name: "pai-license"
