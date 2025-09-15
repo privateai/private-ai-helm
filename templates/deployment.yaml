@@ -40,6 +40,7 @@ spec:
           envFrom:
             - secretRef:
                 name: {{ .Values.secrets.name }}
+                optional: true
           volumeMounts:
             - name: {{ .Values.license.volumeMount }}
               mountPath: /app/license
