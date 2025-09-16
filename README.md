@@ -91,6 +91,10 @@ helm -n private-ai upgrade --install external-secrets external-secrets/external-
 #### Example AWS secret for Private AI docker credentials
 ![docker-type](./images/docker-type.png)
 ![docker-name](./images/docker-name.png)
+#### Example AWS secret for Private AI environment variables
+This is optional, and can be enabled or disabled in the values file.
+![env-type](./images/env-type.png)
+![env-name](./images/env-name.png)
 
 ```console
 # Create a secret-store within the private-ai namespace
