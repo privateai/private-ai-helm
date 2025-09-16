@@ -18,10 +18,8 @@ spec:
       labels:
         {{- include "private-ai.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}      
+        - name: {{ .Values.imagePullSecrets.name }}
       containers:
         - name: {{ .Chart.Name }}          
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -39,13 +37,17 @@ spec:
           env:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.secrets.name }}
+                optional: true
           volumeMounts:
             - name: {{ .Values.license.volumeMount }}
-              mountPath: {{ .Values.license.mountPath }}
-            {{- if .Values.gpuEnabled }}
+              mountPath: /app/license
+          {{- if .Values.gpuEnabled }}
             - name: dshm-volume
               mountPath: /dev/shm
-            {{- end }}
+          {{- end }}
           {{- if .Values.service.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
@@ -75,13 +77,10 @@ spec:
           {{- end }}
       volumes:
         - name: {{ .Values.license.volumeMount }}
-          configMap:
-            name: {{ .Values.license.name }}
-            items:
-              - key: license.info
-                path: license.json
-        {{- if .Values.gpuEnabled }}
+          secret:
+            secretName: {{ .Values.license.name }}
+      {{- if .Values.gpuEnabled }}
         - name: dshm-volume
           emptyDir:
             medium: Memory
-        {{- end }}
+      {{- end }}
