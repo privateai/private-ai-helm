@@ -1,5 +1,5 @@
 # Don't allow checking in a specific environment
-values.yaml.*
+values.custom.yaml
 
 # No need for the subcharts to be checked in
 charts/

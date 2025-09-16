@@ -22,6 +22,5 @@
 *.tmproj
 .vscode/
 # Project specific
-helper_scripts/
 .github
-values.yaml.*
+values.custom.yaml
