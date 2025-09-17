@@ -28,24 +28,27 @@ service:
   type: "LoadBalancer"
   port: 80
   targetPort: 8080
-  timeoutSeconds: 10
-  # These are the values for liveness, startup and readiness probes.
-  # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#probe-v1-core
-  livenessProbe:
-    enabled: False
-    initialDelaySeconds: 120
-    periodSeconds: 1800
-    failureThreshold: 3
-  startupProbe:
-    enabled: True
-    initialDelaySeconds: 60
-    periodSeconds: 10
-    failureThreshold: 3
-  readinessProbe:
-    enabled: True
-    initialDelaySeconds: 60
-    periodSeconds: 60
-    failureThreshold: 3
+  timeoutSeconds: 1
+
+# These are the values for liveness, startup and readiness probes.
+# https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#probe-v1-core
+livenessProbe:
+  enabled: false
+  initialDelaySeconds: 60
+  periodSeconds: 60
+  failureThreshold: 30
+startupProbe:
+  # Note: You should expect to see warnings for startup probe failures in the pod events until the container starts
+  enabled: true
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  failureThreshold: 23
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 60
+  periodSeconds: 20
+  failureThreshold: 3
+
 
 # Settings for the Private AI license file
 license:

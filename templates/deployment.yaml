@@ -48,35 +48,35 @@ spec:
             - name: dshm-volume
               mountPath: /dev/shm
           {{- end }}
-          {{- if .Values.service.livenessProbe.enabled }}
+          {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
               path: /healthz
               port: {{ .Values.service.targetPort }}
-            periodSeconds: {{ .Values.service.livenessProbe.periodSeconds }}
-            initialDelaySeconds: {{ .Values.service.livenessProbe.initialDelaySeconds }}
-            timeoutSeconds: {{ .Values.service.timeoutSeconds }}
-            failureThreshold: {{ .Values.service.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.timeoutSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           {{- end }}
-          {{- if .Values.service.startupProbe.enabled }}
+          {{- if .Values.startupProbe.enabled }}
           startupProbe:
             httpGet:
               path: /healthz
               port: {{ .Values.service.targetPort }}
-            periodSeconds: {{ .Values.service.startupProbe.periodSeconds }}
-            initialDelaySeconds: {{ .Values.service.startupProbe.initialDelaySeconds }}
-            timeoutSeconds: {{ .Values.service.timeoutSeconds }}
-            failureThreshold: {{ .Values.service.startupProbe.failureThreshold }}
+            periodSeconds: {{ .Values.startupProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.timeoutSeconds }}
+            failureThreshold: {{ .Values.startupProbe.failureThreshold }}
           {{- end }}
-          {{- if .Values.service.readinessProbe.enabled }}
+          {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
               path: /healthz
               port: {{ .Values.service.targetPort }}
-            periodSeconds: {{ .Values.service.readinessProbe.periodSeconds }}
-            initialDelaySeconds: {{ .Values.service.readinessProbe.initialDelaySeconds }}
-            timeoutSeconds: {{ .Values.service.timeoutSeconds }}
-            failureThreshold: {{ .Values.service.readinessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.timeoutSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           {{- end }}
       volumes:
         - name: {{ .Values.license.volumeMount }}

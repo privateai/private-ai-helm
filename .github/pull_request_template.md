@@ -8,6 +8,7 @@
 ## Testing
 - [ ] Tested locally with helm lint
 - [ ] Tested by Github CI
+- [ ] Tested in a local cluster
 
 ## Checklist
 - [ ] Update chart version if planning a release
