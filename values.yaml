@@ -49,6 +49,24 @@ readinessProbe:
   periodSeconds: 20
   failureThreshold: 3
 
+# These are the values for the affinity
+# https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volumenodeaffinity-v1-core
+affinity:
+  enabled: false
+  key: "someKey"
+  operator: "someOperator"
+  values: "someValues"
+
+# There are the values for requests and limits
+# https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
+limits:
+  gpu: 1
+  memory: "1024MB"
+  cpu: "250mi"
+
+requests:
+  memory: "1024MB"
+  cpu: "250mi"
 
 # Settings for the Private AI license file
 license:

@@ -26,7 +26,12 @@ spec:
           {{- if .Values.gpuEnabled }}
           resources:
             limits:
-              nvidia.com/gpu: 1
+              nvidia.com/gpu: {{ .Values.limits.gpu }}
+              memory: {{ .Values.limits.memory }}
+              cpu: {{ .Values.limits.cpu }}
+            requests:
+              memory: {{ .Values.requests.memory }}
+              cpu: {{ .Values.requests.cpu }}
           {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -87,3 +92,18 @@ spec:
           emptyDir:
             medium: Memory
       {{- end }}
+      {{- if .Values.affinity.enabled }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: {{ .Values.affinity.key }}
+                operator: {{ .Values.affinity.operator }}
+                values:
+                - {{ .Values.affinity.values }} 
+      {{- end }}
+      tolerations:
+        - key: "example-key"
+          operator: "Exists"
+          effect: "NoSchedule"
