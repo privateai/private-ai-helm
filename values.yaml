@@ -98,14 +98,14 @@ tolerations:
 # There are the values for requests and limits
 # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
 limits:
-  enabled: True
-  memory: "131072MB"
-  cpu: "32"
+  enabled: false
+  memory: "12GiB"
+  cpu: "4"
 
 requests:
-  enabled: True
-  memory: "65536MB"
-  cpu: "16"
+  enabled: false
+  memory: "8GiB"
+  cpu: "3"
 
 # Settings for the Private AI license file
 license:
