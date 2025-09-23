@@ -98,16 +98,28 @@ spec:
           emptyDir:
             medium: Memory
       {{- end }}
-      {{- if .Values.affinity.enabled }}
+      {{- if or .Values.affinity.requiredDuringSchedulingIgnoredDuringExecution.enabled .Values.affinity.preferredDuringSchedulingIgnoredDuringExecution.enabled}}
       affinity:
         nodeAffinity:
+          {{- if .Values.affinity.requiredDuringSchedulingIgnoredDuringExecution.enabled }}
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: {{ .Values.affinity.key }}
-                operator: {{ .Values.affinity.operator }}
+              - key: {{ .Values.affinity.requiredDuringSchedulingIgnoredDuringExecution.key }}
+                operator: {{ .Values.affinity.requiredDuringSchedulingIgnoredDuringExecution.operator }}
                 values:
-                - {{ .Values.affinity.values }} 
+                - {{ .Values.affinity.requiredDuringSchedulingIgnoredDuringExecution.values }} 
+          {{- end }}
+          {{- if .Values.affinity.preferredDuringSchedulingIgnoredDuringExecution.enabled }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            weight: {{ .Values.affinity.preferredDuringSchedulingIgnoredDuringExecution.weight }}
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: {{ .Values.affinity.preferredDuringSchedulingIgnoredDuringExecution.key }}
+                operator: {{ .Values.affinity.preferredDuringSchedulingIgnoredDuringExecution.operator }}
+                values:
+                - {{ .Values.affinity.preferredDuringSchedulingIgnoredDuringExecution.values }} 
+          {{- end }}
       {{- end }}
       tolerations:
         - key: "example-key"

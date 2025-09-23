@@ -52,10 +52,18 @@ readinessProbe:
 # These are the values for the affinity
 # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volumenodeaffinity-v1-core
 affinity:
-  enabled: false
-  key: "someKey"
-  operator: "someOperator"
-  values: "someValues"
+  requiredDuringSchedulingIgnoredDuringExecution:
+    enabled: false
+    key: "someKey"
+    operator: "someOperator"
+    values: "someValues"
+  preferredDuringSchedulingIgnoredDuringExecution:
+    enabled: false
+    weight: "1"
+    key: "someKey"
+    operator: "someOperator"
+    values: "someValues"
+
 
 # There are the values for requests and limits
 # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
