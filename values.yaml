@@ -84,12 +84,14 @@ topologySpreadConstraints:
 
 tolerations: 
   enabled: false
-  values: {
-    key: "app", 
-    operator: "Equal",
-    value: "private-ai",
-    effect: "NoSchedule"
-  }
+  values: {}
+# Use the following if you have added a taint to your nodes of app=private-ai
+#  {
+#    key: "app", 
+#    operator: "Equal",
+#    value: "private-ai",
+#    effect: "NoSchedule"
+#  }
 
 
 
