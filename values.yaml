@@ -60,13 +60,14 @@ affinity:
 # There are the values for requests and limits
 # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
 limits:
-  gpu: 1
-  memory: "1024MB"
-  cpu: "250mi"
+  enabled: True
+  memory: "131072MB"
+  cpu: "32"
 
 requests:
-  memory: "1024MB"
-  cpu: "250mi"
+  enabled: True
+  memory: "65536MB"
+  cpu: "16"
 
 # Settings for the Private AI license file
 license:

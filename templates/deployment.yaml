@@ -23,15 +23,21 @@ spec:
       containers:
         - name: {{ .Chart.Name }}          
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          {{- if .Values.gpuEnabled }}
+          {{- if or or .Values.limits.enabled .Values.requests.enabled .Values.gpuEnabled }}
           resources:
+            {{- if or .Values.limits.enabled .Values.gpuEnabled }}
             limits:
-              nvidia.com/gpu: {{ .Values.limits.gpu }}
+              {{- if .Values.gpuEnabled }}
+              nvidia.com/gpu: 1
+              {{- end }}
               memory: {{ .Values.limits.memory }}
               cpu: {{ .Values.limits.cpu }}
+            {{- end }}
+            {{-if .Values.requests.enabled}}
             requests:
               memory: {{ .Values.requests.memory }}
               cpu: {{ .Values.requests.cpu }}
+            {{- end }}
           {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
