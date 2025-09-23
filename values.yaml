@@ -51,18 +51,76 @@ readinessProbe:
 
 # These are the values for the affinity
 # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volumenodeaffinity-v1-core
-affinity:
-  requiredDuringSchedulingIgnoredDuringExecution:
-    enabled: false
-    key: "someKey"
-    operator: "someOperator"
-    values: "someValues"
-  preferredDuringSchedulingIgnoredDuringExecution:
-    enabled: false
-    weight: "1"
-    key: "someKey"
-    operator: "someOperator"
-    values: "someValues"
+nodeAffinity:
+  enabled: false
+  values: {
+    "preferredDuringSchedulingIgnoredDuringExecution":
+    [
+      {weight: "1", 
+      preference: [{
+        matchExpressions: [{
+          key: "kops.k8s.io/instancegroup",
+          operator: "in",
+          values: ["private-ai"]
+        }]
+      }]},
+      {weight: "100", 
+      preference: [{
+        matchExpressions: [{
+          key: "kops.k8s.io/instancegroup",
+          operator: "in",
+          values: ["private-ai-spot"]
+        }]
+      }]},
+    ]
+  }
+podAntiAffinity:
+  enabled: false
+  values: {
+    "requiredDuringSchedulingIgnoredDuringExecution":
+    [
+      {labelSelector: [{
+        matchExpressions: [{
+          key: "app.kubernetes.io/name",
+          operator: "in",
+          values: ["private-ai"]
+        },
+        {
+          key: "app.kubernetes.io/instance",
+          operator: "in",
+          values: ["private-ai"]
+        }
+        ]
+      }],
+      topologyKey: "kubernetes.io/hostname"
+      }
+    ]
+  }
+
+topologySpreadConstraints:
+  enabled: false
+  values: {
+    labelSelector: [{
+      matchLabels: [{
+        app.kubernetes.io/name: "private-ai",
+        app.kubernetes.io/instance: "private-ai"
+      }]
+    }],
+    matchLabelKeys: ["pod-template-hash"],
+    maxSkew: "1", 
+    topologyKey: "topology.kubernetes.io/zone",
+    whenUnsatisfiable: "ScheduleAnyway"
+  }
+
+tolerations: 
+  enabled: false
+  values: {
+    key: "app", 
+    operator: "Equal",
+    value: "private-ai",
+    effect: "NoSchedule"
+  }
+
 
 
 # There are the values for requests and limits

@@ -98,30 +98,32 @@ spec:
           emptyDir:
             medium: Memory
       {{- end }}
-      {{- if or .Values.affinity.requiredDuringSchedulingIgnoredDuringExecution.enabled .Values.affinity.preferredDuringSchedulingIgnoredDuringExecution.enabled}}
+
       affinity:
+        {{- if .Values.nodeAffinity.enabled}}
+        {{- with .Values.nodeAffinity.values}}
         nodeAffinity:
-          {{- if .Values.affinity.requiredDuringSchedulingIgnoredDuringExecution.enabled }}
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: {{ .Values.affinity.requiredDuringSchedulingIgnoredDuringExecution.key }}
-                operator: {{ .Values.affinity.requiredDuringSchedulingIgnoredDuringExecution.operator }}
-                values:
-                - {{ .Values.affinity.requiredDuringSchedulingIgnoredDuringExecution.values }} 
-          {{- end }}
-          {{- if .Values.affinity.preferredDuringSchedulingIgnoredDuringExecution.enabled }}
-          preferredDuringSchedulingIgnoredDuringExecution:
-            weight: {{ .Values.affinity.preferredDuringSchedulingIgnoredDuringExecution.weight }}
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: {{ .Values.affinity.preferredDuringSchedulingIgnoredDuringExecution.key }}
-                operator: {{ .Values.affinity.preferredDuringSchedulingIgnoredDuringExecution.operator }}
-                values:
-                - {{ .Values.affinity.preferredDuringSchedulingIgnoredDuringExecution.values }} 
-          {{- end }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- end }}
+
+        {{- if .Values.podAntiAffinity.enabled}}
+        {{- with .Values.podAntiAffinity.values}}
+        podAntiAffinity:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- end }}
+      
+      {{- if .Values.topologySpreadConstraints.enabled}}
+      {{- with .Values.topologySpreadConstraints.values}}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- end }}
+      
+      {{- if .Values.tolerations.enabled}}
+      {{- with .Values.tolerations.values}}
       tolerations:
-        - key: "example-key"
-          operator: "Exists"
-          effect: "NoSchedule"
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
