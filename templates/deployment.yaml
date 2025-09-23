@@ -33,7 +33,7 @@ spec:
               memory: {{ .Values.limits.memory }}
               cpu: {{ .Values.limits.cpu }}
             {{- end }}
-            {{-if .Values.requests.enabled}}
+            {{- if .Values.requests.enabled}}
             requests:
               memory: {{ .Values.requests.memory }}
               cpu: {{ .Values.requests.cpu }}
