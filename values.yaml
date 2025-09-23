@@ -56,26 +56,27 @@ nodeAffinity:
   values: {}
 podAntiAffinity:
   enabled: false
-  values: {
-    "requiredDuringSchedulingIgnoredDuringExecution":
-    [
-      {labelSelector: [{
-        matchExpressions: [{
-          key: "app.kubernetes.io/name",
-          operator: "in",
-          values: ["private-ai"]
-        },
-        {
-          key: "app.kubernetes.io/instance",
-          operator: "in",
-          values: ["private-ai"]
-        }
-        ]
-      }],
-      topologyKey: "kubernetes.io/hostname"
-      }
-    ]
-  }
+  values: {}
+# Recommended configuration to ensure only one Private AI container is scheduled per node:
+#  {
+#    "requiredDuringSchedulingIgnoredDuringExecution":
+#    [
+#      {labelSelector: [{
+#        matchExpressions: [{
+#          key: "app.kubernetes.io/name",
+#          operator: "in",
+#          values: ["private-ai"]
+#        },
+#        {
+#          key: "app.kubernetes.io/instance",
+#          operator: "in",
+#          values: ["private-ai"]
+#        }
+#        ]
+#      }]
+#      }
+#    ]
+#  }
 
 topologySpreadConstraints:
   enabled: false
