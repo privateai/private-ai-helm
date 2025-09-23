@@ -23,7 +23,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}          
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          {{- if or or .Values.limits.enabled .Values.requests.enabled .Values.gpuEnabled }}
+          {{- if or .Values.limits.enabled .Values.requests.enabled .Values.gpuEnabled }}
           resources:
             {{- if or .Values.limits.enabled .Values.gpuEnabled }}
             limits:
