@@ -49,6 +49,63 @@ readinessProbe:
   periodSeconds: 20
   failureThreshold: 3
 
+# These are the values for the affinity
+# https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volumenodeaffinity-v1-core
+nodeAffinity:
+  enabled: false
+  values: {}
+podAntiAffinity:
+  enabled: false
+  values: {}
+# Recommended configuration to ensure only one Private AI container is scheduled per node:
+#  {
+#    "requiredDuringSchedulingIgnoredDuringExecution":
+#    [
+#      {labelSelector: [{
+#        matchExpressions: [{
+#          key: "app.kubernetes.io/name",
+#          operator: "in",
+#          values: ["private-ai"]
+#        },
+#        {
+#          key: "app.kubernetes.io/instance",
+#          operator: "in",
+#          values: ["private-ai"]
+#        }
+#        ]
+#      }]
+#      }
+#    ]
+#  }
+
+topologySpreadConstraints:
+  enabled: false
+  values: {}
+
+tolerations: 
+  enabled: false
+  values: {}
+# Use the following if you have added a taint to your nodes of app=private-ai
+#  {
+#    key: "app", 
+#    operator: "Equal",
+#    value: "private-ai",
+#    effect: "NoSchedule"
+#  }
+
+
+
+# There are the values for requests and limits
+# https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
+limits:
+  enabled: false
+  memory: "12GiB"
+  cpu: "4"
+
+requests:
+  enabled: false
+  memory: "8GiB"
+  cpu: "3"
 
 # Settings for the Private AI license file
 license:

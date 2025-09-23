@@ -23,10 +23,21 @@ spec:
       containers:
         - name: {{ .Chart.Name }}          
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          {{- if .Values.gpuEnabled }}
+          {{- if or .Values.limits.enabled .Values.requests.enabled .Values.gpuEnabled }}
           resources:
+            {{- if or .Values.limits.enabled .Values.gpuEnabled }}
             limits:
+              {{- if .Values.gpuEnabled }}
               nvidia.com/gpu: 1
+              {{- end }}
+              memory: {{ .Values.limits.memory }}
+              cpu: {{ .Values.limits.cpu }}
+            {{- end }}
+            {{- if .Values.requests.enabled}}
+            requests:
+              memory: {{ .Values.requests.memory }}
+              cpu: {{ .Values.requests.cpu }}
+            {{- end }}
           {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -86,4 +97,33 @@ spec:
         - name: dshm-volume
           emptyDir:
             medium: Memory
+      {{- end }}
+
+      affinity:
+        {{- if .Values.nodeAffinity.enabled}}
+        {{- with .Values.nodeAffinity.values}}
+        nodeAffinity:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- end }}
+
+        {{- if .Values.podAntiAffinity.enabled}}
+        {{- with .Values.podAntiAffinity.values}}
+        podAntiAffinity:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- end }}
+      
+      {{- if .Values.topologySpreadConstraints.enabled}}
+      {{- with .Values.topologySpreadConstraints.values}}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      
+      {{- if .Values.tolerations.enabled}}
+      {{- with .Values.tolerations.values}}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- end }}
