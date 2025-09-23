@@ -53,27 +53,7 @@ readinessProbe:
 # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volumenodeaffinity-v1-core
 nodeAffinity:
   enabled: false
-  values: {
-    "preferredDuringSchedulingIgnoredDuringExecution":
-    [
-      {weight: "1", 
-      preference: [{
-        matchExpressions: [{
-          key: "kops.k8s.io/instancegroup",
-          operator: "in",
-          values: ["private-ai"]
-        }]
-      }]},
-      {weight: "100", 
-      preference: [{
-        matchExpressions: [{
-          key: "kops.k8s.io/instancegroup",
-          operator: "in",
-          values: ["private-ai-spot"]
-        }]
-      }]},
-    ]
-  }
+  values: {}
 podAntiAffinity:
   enabled: false
   values: {
