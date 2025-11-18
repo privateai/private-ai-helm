@@ -66,7 +66,7 @@ spec:
               port: {{ .Values.service.targetPort }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
-            timeoutSeconds: {{ .Values.timeoutSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           {{- end }}
           {{- if .Values.startupProbe.enabled }}
@@ -76,7 +76,7 @@ spec:
               port: {{ .Values.service.targetPort }}
             periodSeconds: {{ .Values.startupProbe.periodSeconds }}
             initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
-            timeoutSeconds: {{ .Values.timeoutSeconds }}
+            timeoutSeconds: {{ .Values.startupProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.startupProbe.failureThreshold }}
           {{- end }}
           {{- if .Values.readinessProbe.enabled }}
@@ -86,7 +86,7 @@ spec:
               port: {{ .Values.service.targetPort }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
-            timeoutSeconds: {{ .Values.timeoutSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           {{- end }}
       volumes:
