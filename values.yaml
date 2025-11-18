@@ -28,6 +28,11 @@ service:
   type: "LoadBalancer"
   port: 80
   targetPort: 8080
+  annotations: {}
+  # Set the Azure load balancer to be internal only, if you are planning to use an ingress to manage traffic
+  # annotations: {
+  #   service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  # }
 
 # These are the values for liveness, startup and readiness probes.
 # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#probe-v1-core
