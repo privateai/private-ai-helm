@@ -28,7 +28,6 @@ service:
   type: "LoadBalancer"
   port: 80
   targetPort: 8080
-  timeoutSeconds: 1
 
 # These are the values for liveness, startup and readiness probes.
 # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#probe-v1-core
@@ -37,17 +36,20 @@ livenessProbe:
   initialDelaySeconds: 60
   periodSeconds: 60
   failureThreshold: 30
+  timeoutSeconds: 1
 startupProbe:
   # Note: You should expect to see warnings for startup probe failures in the pod events until the container starts
   enabled: true
   initialDelaySeconds: 5
   periodSeconds: 5
   failureThreshold: 23
+  timeoutSeconds: 1
 readinessProbe:
   enabled: true
   initialDelaySeconds: 60
   periodSeconds: 20
   failureThreshold: 3
+  timeoutSeconds: 1
 
 # These are the values for the affinity
 # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volumenodeaffinity-v1-core
