@@ -61,44 +61,68 @@ readinessProbe:
 nodeAffinity:
   enabled: false
   values: {}
+# Use the following to example to attempt to schedule nodes first on nodes with the label "private-ai-spot"
+# and after on nodes with the label "private-ai"
+  # values:
+  #   preferredDuringSchedulingIgnoredDuringExecution:
+  #     - preference:
+  #         matchExpressions:
+  #           - key: "nodetype"
+  #             operator: "In"
+  #             values:
+  #               - "private-ai"
+  #       weight: 1
+  #     - preference:
+  #         matchExpressions:
+  #           - key: "nodetype"
+  #             operator: "In"
+  #             values:
+  #               - "private-ai-spot"
+  #       weight: 100
+
 podAntiAffinity:
   enabled: false
   values: {}
 # Recommended configuration to ensure only one Private AI container is scheduled per node:
-#  {
-#    "requiredDuringSchedulingIgnoredDuringExecution":
-#    [
-#      {labelSelector: [{
-#        matchExpressions: [{
-#          key: "app.kubernetes.io/name",
-#          operator: "in",
-#          values: ["private-ai"]
-#        },
-#        {
-#          key: "app.kubernetes.io/instance",
-#          operator: "in",
-#          values: ["private-ai"]
-#        }
-#        ]
-#      }]
-#      }
-#    ]
-#  }
+  # values:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     - labelSelector:
+  #         matchExpressions:
+  #           - key: "app.kubernetes.io/name"
+  #             operator: "In"
+  #             values:
+  #               - "private-ai"
+  #           - key: "app.kubernetes.io/instance"
+  #             operator: "In"
+  #             values:
+  #               - "private-ai"
+  #       topologyKey: "kubernetes.io/hostname"
 
 topologySpreadConstraints:
   enabled: false
-  values: {}
+  values: []
+# Use the following if you would like to spread your pods evenly across your infrastructure zones
+  # values:
+  #   - labelSelector:
+  #       matchLabels:
+  #         app.kubernetes.io/name: "private-ai"
+  #         app.kubernetes.io/instance: "private-ai"
+  #     matchLabelKeys:
+  #       - "pod-template-hash"
+  #     maxSkew: 1
+  #     topologyKey: "topology.kubernetes.io/zone"
+  #     whenUnsatisfiable: "ScheduleAnyway"
+
 
 tolerations: 
   enabled: false
-  values: {}
+  values: []
 # Use the following if you have added a taint to your nodes of app=private-ai
-#  {
-#    key: "app", 
-#    operator: "Equal",
-#    value: "private-ai",
-#    effect: "NoSchedule"
-#  }
+  # values:
+  #   - key: app
+  #     operator: "Equal"
+  #     value: "private-ai"
+  #     effect: "NoSchedule"
 
 
 
