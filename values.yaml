@@ -9,7 +9,7 @@ image:
   pullPolicy: "IfNotPresent"
   # Can be a direct version tag / container flavour (i.e. 4.0.4-cpu-text) OR a 'latest' tag (i.e. cpu, cpu-text, gpu, gpu-text)
   # It is recommended to pin to a specific version for production environments
-  tag: "4.1.0-cpu"
+  tag: "4.2.2-cpu"
 
 # Change this to true if you have a cluster that has nodes with Nvidia GPUs available and would like to run the GPU container
 gpuEnabled: false
