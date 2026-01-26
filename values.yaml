@@ -173,6 +173,7 @@ secrets:
   # If you use the External Secrets Operator, you can ignore this section and populate via the externalsecrets section below
   data: []
   # Enter any environment variables for your deployment you wish to remain secret. Examples: https://docs.private-ai.com/azure-ocr/
+  # data:
     # - name: "PAI_AZ_COMPUTER_VISION_KEY"
     #   value: "keyvalue"
 
@@ -224,8 +225,9 @@ ingress:
   host: "ingress.domain.com"
   tlsSecretName: "private-ai-tls"
 
-# Specifies whether to deploy the external secrets operator
+# Configuration for the External Secrets operator
 externalsecrets:
+  # Specifies whether to use configuration for the external secrets operator
   enabled: false
   # Specifies the secret store to retrieve secrets
   secretstorename: "secret-store"
