@@ -64,14 +64,50 @@ helm uninstall --namespace private-ai private-ai
 To customize your deployment, enable different sections of your values.yaml file as per the documentation below.
 
 ### Ingress Controller
-If you would like to set up an external ingress to enable external traffic to reach your the Private AI deployment, you must enable the ingress-nginx and cert-manager helm charts in the values.yaml file. Additionally, a sample ingress deployment file is included, and can be deployed with self-signed certificates for testing.
+If you would like to set up an external ingress to enable external traffic to reach your the Private AI deployment, you must enable the haproxy-ingress and cert-manager helm charts in the values.yaml file. Additionally, a sample ingress deployment file is included, and can be deployed with self-signed certificates for testing.
 
-If you would like to deploy your own certificate issuer and certificates, please see the [cert-manager docs](https://cert-manager.io/docs/)
+If you would like to deploy your own certificate issuer and certificates, please see the [cert-manager docs](https://cert-manager.io/docs/).
 
-The ingress-nginx configuration required to host a certificate and manage incoming traffic from the ingress to the Private AI deployment is included with the chart. For more advanced configuration, please see the [ingress-nginx docs](https://github.com/kubernetes/ingress-nginx)
+The haproxy-ingress configuration required to host a certificate and manage incoming traffic from the ingress to the Private AI deployment is included with the chart. For more advanced configuration, please see the [haproxy-ingress docs](https://haproxy-ingress.github.io/docs/getting-started/).
+
+Note: The haproxy-ingress and cert-manager helm charts are not listed as dependencies in this chart, and must be installed separately prior to installation.
+
+```console
+# Create a namespaces in your cluster for the cert-manager and ingress-nginx (private-ai) deployment
+kubectl create namespace cert-manager
+kubectl create namespace haproxy-ingress
+
+# Upgrade or install cert-manager into the cluster
+helm upgrade --install \
+  cert-manager oci://quay.io/jetstack/charts/cert-manager \
+  --version v1.19.2 \
+  --namespace cert-manager \
+  --set crds.enabled=true \
+  --set clusterResourceNamespace=private-ai \
+  --set webhook.hostNetwork=true \
+  --set webhook.securePort=10255
+
+# Required webhook settings if deploying to AWS with the VPC-CNI plugin
+#  --set webhook.hostNetwork=true \
+#  --set webhook.securePort=10255
+
+# Add haproxy-ingress repo
+helm repo add haproxy-ingress https://haproxy-ingress.github.io/charts
+helm repo update
+
+# Upgrade or install ingress-nginx into the cluster
+helm upgrade --install \
+  haproxy-ingress haproxy-ingress/haproxy-ingress \
+  --namespace haproxy-ingress \
+  --set controller.ingressClassResource.enabled=true
+
+# Update your values.custom.yaml file with the appropriate values under certmanager, haproxy, and ingress
+```
 
 ### External Secrets Operator
-If you would like to store you license file and docker credentials in an external secret store, you can use the External Secrets Operator helm chart. Note: The External Secrets chart is not listed as a dependency in this chart, and must be installed separately prior to installation.
+If you would like to store you license file and docker credentials in an external secret store, you can use the External Secrets Operator helm chart.
+
+Note: The External Secrets chart is not listed as a dependency in this chart, and must be installed separately prior to installation.
 
 ```console
 # Create a namespace in your cluster for the private-ai deployment
@@ -86,6 +122,7 @@ helm -n private-ai upgrade --install external-secrets external-secrets/external-
 
 # Create two secrets, one for the license file and one for the docker credentials, in your external secret store of choice
 ```
+
 #### Example AWS secret for Private AI license file
 ![license-type](./images/license-type.png)
 ![license-name](./images/license-name.png)
