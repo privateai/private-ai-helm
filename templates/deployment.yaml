@@ -19,7 +19,11 @@ spec:
         {{- include "private-ai.selectorLabels" . | nindent 8 }}
     spec:
       imagePullSecrets:
+      {{- if .Values.externalsecrets.enabled }}
+        - name: {{ .Values.externalsecrets.dockercredential.name }}
+      {{- else }}
         - name: {{ .Values.imagePullSecrets.name }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}          
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -50,7 +54,11 @@ spec:
           {{- end }}
           envFrom:
             - secretRef:
+                {{- if .Values.externalsecrets.enabled }}
+                name: {{ .Values.externalsecrets.secrets.name }}
+                {{- else }}
                 name: {{ .Values.secrets.name }}
+                {{- end }}
                 optional: true
           volumeMounts:
             - name: {{ .Values.license.volumeMount }}
@@ -92,7 +100,11 @@ spec:
       volumes:
         - name: {{ .Values.license.volumeMount }}
           secret:
+            {{- if .Values.externalsecrets.enabled }}
+            secretName: {{ .Values.externalsecrets.license.name }}
+            {{- else }}
             secretName: {{ .Values.license.name }}
+            {{- end }}
       {{- if .Values.gpuEnabled }}
         - name: dshm-volume
           emptyDir:
