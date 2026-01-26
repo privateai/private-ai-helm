@@ -29,7 +29,7 @@ kubectl -n private-ai create secret docker-registry crprivateaiprod-creds \
 helm registry login crprivateaiprod.azurecr.io
 
 # Create a custom values file for your specific installation
-helm show values oci://crprivateaiprod.azurecr.io/helm/private-ai:1.4.3 > values.custom.yaml
+helm show values oci://crprivateaiprod.azurecr.io/helm/private-ai:1.5.0 > values.custom.yaml
 
 # Copy your license.json file contents and paste them into the license.data section of the values.custom.yaml file with single quotes surrounding, as per below
 license:
@@ -41,7 +41,7 @@ helm upgrade --install \
 private-ai \
 -f values.custom.yaml \
 oci://crprivateaiprod.azurecr.io/helm/private-ai \
---version 1.4.3
+--version 1.5.0
 ```
 
 ## Testing
@@ -140,5 +140,5 @@ helm upgrade --install \
 private-ai \
 -f values.custom.yaml \
 oci://crprivateaiprod.azurecr.io/helm/private-ai \
---version 1.4.3
+--version 1.5.0
 ```
