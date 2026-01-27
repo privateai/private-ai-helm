@@ -9,6 +9,7 @@ Please keep in mind that for deployments requiring a public facing endpoint, you
 
 - You must have a valid Private AI license file and docker credentials. If you do not have both, please [contact us](https://www.private-ai.com/en/company/contact-us)
 - You must have an existing kubernetes cluster
+- Helm version 4.0.0 or greater
 
 ## Installing the chart
 
@@ -28,7 +29,7 @@ kubectl -n private-ai create secret docker-registry crprivateaiprod-creds \
 helm registry login crprivateaiprod.azurecr.io
 
 # Create a custom values file for your specific installation
-helm show values oci://crprivateaiprod.azurecr.io/helm/private-ai:1.4.3 > values.custom.yaml
+helm show values oci://crprivateaiprod.azurecr.io/helm/private-ai:1.5.0 > values.custom.yaml
 
 # Copy your license.json file contents and paste them into the license.data section of the values.custom.yaml file with single quotes surrounding, as per below
 license:
@@ -40,7 +41,7 @@ helm upgrade --install \
 private-ai \
 -f values.custom.yaml \
 oci://crprivateaiprod.azurecr.io/helm/private-ai \
---version 1.4.3
+--version 1.5.0
 ```
 
 ## Testing
@@ -139,5 +140,5 @@ helm upgrade --install \
 private-ai \
 -f values.custom.yaml \
 oci://crprivateaiprod.azurecr.io/helm/private-ai \
---version 1.4.3
+--version 1.5.0
 ```

@@ -9,14 +9,14 @@ image:
   pullPolicy: "IfNotPresent"
   # Can be a direct version tag / container flavour (i.e. 4.0.4-cpu-text) OR a 'latest' tag (i.e. cpu, cpu-text, gpu, gpu-text)
   # It is recommended to pin to a specific version for production environments
-  tag: "4.1.0-cpu"
+  tag: "4.2.2-cpu"
 
 # Change this to true if you have a cluster that has nodes with Nvidia GPUs available and would like to run the GPU container
 gpuEnabled: false
 
+# This secret will store your docker pull credentials. You can obtain these from the customer portal
+# If you enable the External Secrets Operator, this section will be ignored
 imagePullSecrets:
-  # This secret will store your docker pull credentials. You can obtain these from the customer portal
-  # If you enable the External Secrets Operator, this will also be the name of the secret objects
   name: "crprivateaiprod-creds"
 
 nameOverride: ""
@@ -130,19 +130,25 @@ tolerations:
 # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
 limits:
   enabled: false
-  memory: "12GiB"
+  memory: "12Gi"
   cpu: "4"
 
 requests:
   enabled: false
-  memory: "8GiB"
+  memory: "8Gi"
   cpu: "3"
 
 # Settings for the Private AI license file
 license:
-  # Sets the name of the license
-  # If you enable the External Secrets Operator, this will also be the name of the secret objects
+  # If you enable the External Secrets Operator, this section will be ignored
+  # Sets the name of the license secret object
   name: "pai-license"
+  # Add optional annotations for the license secret. For more details see https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  annotations: {}
+  # Example annotations
+  # annotations:
+  #   annotation-key1: "annotation-value1"
+  #   annotation-key2: "annotation-value2"
   volumeMount: "license-volume"
   # If you use the External Secrets Operator, you can ignore this setting as the license file will be populated via a secret
   data: 'Override with your license data. See readme for more details'
@@ -155,12 +161,19 @@ envVars: []
 # Configuration options for adding a kubernetes secret
 # This secret will be added to the environment variable for the Private AI deployment
 secrets:
+  # If you use the External Secrets Operator, this section will be ignored
   # Sets the name for the secrets
-  # If you use the External Secrets Operator, this will also be the name of the secrets object
   name: "pai-secrets"
+  # Add optional annotations for the deployment secret. For more details see https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  annotations: {}
+  # Example annotations
+  # annotations:
+  #   annotation-key1: "annotation-value1"
+  #   annotation-key2: "annotation-value2"
   # If you use the External Secrets Operator, you can ignore this section and populate via the externalsecrets section below
   data: []
   # Enter any environment variables for your deployment you wish to remain secret. Examples: https://docs.private-ai.com/azure-ocr/
+  # data:
     # - name: "PAI_AZ_COMPUTER_VISION_KEY"
     #   value: "keyvalue"
 
@@ -212,13 +225,22 @@ ingress:
   host: "ingress.domain.com"
   tlsSecretName: "private-ai-tls"
 
-# Specifies whether to deploy the external secrets operator
+# Configuration for the External Secrets operator
 externalsecrets:
+  # Specifies whether to use configuration for the external secrets operator
   enabled: false
   # Specifies the secret store to retrieve secrets
   secretstorename: "secret-store"
   # Configuration details for the docker credentials secret
   dockercredential:
+    # Name of the externalsecret and secret objects for the imagepullsecret
+    name: "crprivateaiprod-creds"
+    # Optional annotations for the docker credential externalsecret and secret objects
+    annotations: {}
+    # Example annotations
+    # annotations:
+    #   annotation-key1: "annotation-value1"
+    #   annotation-key2: "annotation-value2"
     # Set the refresh interval to check for updated secrets
     refreshInterval: "1h"
     # This is the reference to the name of the secret from the secret store
@@ -229,6 +251,14 @@ externalsecrets:
     passwordProperty: "password"
   # Configuration details for the license file
   license:
+    # Name of the externalsecret and secret objects for the license
+    name: "pai-license"
+    # Optional annotations for the license externalsecret and secret objects
+    annotations: {}
+    # Example annotations
+    # annotations:
+    #   annotation-key1: "annotation-value1"
+    #   annotation-key2: "annotation-value2"
     # Set the refresh interval to check for updated secrets
     refreshInterval: "1h"
     # This is the reference to the name of the secret from the secret store
@@ -236,6 +266,14 @@ externalsecrets:
     licenseProperty: "license.json"
   # Configuration for the optional Private AI environment secrets
   secrets:
+    # Name of the externalsecret and secret objects for deployment
+    name: "pai-secrets"
+    # Optional annotations for the deployment externalsecret and secret objects
+    annotations: {}
+    # Example annotations
+    # annotations:
+    #   annotation-key1: "annotation-value1"
+    #   annotation-key2: "annotation-value2"
     # Enables or disables Private AI environment secrets
     enabled: false
     # This is the reference to the name of the secret from the secret store

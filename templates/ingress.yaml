@@ -5,8 +5,10 @@ metadata:
   name: {{ include "private-ai.fullname" . }}
   labels:
     {{- include "private-ai.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
   annotations:
-    {{ toYaml .Values.ingress.annotations | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.ingressClassName }}
   rules:
