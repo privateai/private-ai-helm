@@ -46,7 +46,7 @@ service:
   #   service.beta.kubernetes.io/azure-load-balancer-internal: "true"
   # Set the AWS load balancer to be internal only, if you are planning to use an ingress to manage traffic
   # annotations:
-  #   service.beta.kubernetes.io/aws-load-balancer-scheme: "internal"
+  #   service.beta.kubernetes.io/aws-load-balancer-internal: "true"
 
 # These are the values for liveness, startup and readiness probes.
 # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#probe-v1-core
