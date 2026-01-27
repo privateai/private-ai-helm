@@ -37,11 +37,10 @@ license:
 
 # Upgrade or install the Private AI chart with a name and namespace of private-ai
 helm upgrade --install \
---namespace private-ai \
-private-ai \
--f values.custom.yaml \
-oci://crprivateaiprod.azurecr.io/helm/private-ai \
---version 1.5.0
+  private-ai oci://crprivateaiprod.azurecr.io/helm/private-ai \
+  --namespace private-ai \
+  -f values.custom.yaml \
+  --version 1.5.0
 ```
 
 ## Testing
@@ -73,39 +72,48 @@ The haproxy-ingress configuration required to host a certificate and manage inco
 Note: The haproxy-ingress and cert-manager helm charts are not listed as dependencies in this chart, and must be installed separately prior to installation.
 
 ```console
-# Create a namespaces in your cluster for the cert-manager and ingress-nginx (private-ai) deployment
+# Create a namespaces in your cluster for the cert-manager chart
 kubectl create namespace cert-manager
-kubectl create namespace haproxy-ingress
 
-# Upgrade or install cert-manager into the cluster
+# Upgrade or install cert-manager into the cluster with custom resource definitions
 helm upgrade --install \
   cert-manager oci://quay.io/jetstack/charts/cert-manager \
-  --version v1.19.2 \
   --namespace cert-manager \
   --set crds.enabled=true \
-  --set clusterResourceNamespace=private-ai \
-  --set webhook.hostNetwork=true \
-  --set webhook.securePort=10255
+  --set clusterResourceNamespace=private-ai
 
 # Required webhook settings if deploying to AWS with the VPC-CNI plugin
 #  --set webhook.hostNetwork=true \
 #  --set webhook.securePort=10255
 
-# Add haproxy-ingress repo
-helm repo add haproxy-ingress https://haproxy-ingress.github.io/charts
-helm repo update
+# Create a namespaces in your cluster for the haproxy-ingress chart
+kubectl create namespace cert-manager
 
-# Upgrade or install ingress-nginx into the cluster
+# Upgrade or install haproxy-ingress into the cluster
 helm upgrade --install \
-  haproxy-ingress haproxy-ingress/haproxy-ingress \
-  --namespace haproxy-ingress \
-  --set controller.ingressClassResource.enabled=true
+  haproxy-kubernetes-ingress oci://ghcr.io/haproxytech/helm-charts/kubernetes-ingress \
+  --namespace haproxy-controller \
+  --set controller.service.type=LoadBalancer
 
-# Update your values.custom.yaml file with the appropriate values under certmanager, haproxy, and ingress
+# Required setting for AWS, see https://github.com/haproxytech/helm-charts/tree/main/kubernetes-ingress#installing-on-amazon-elastic-kubernetes-service-eks
+#  --set controller.service.enablePorts.quic=false
+
+# Required setting for Azure, see https://github.com/haproxytech/helm-charts/tree/main/kubernetes-ingress#installing-on-azure-managed-kubernetes-service-aks
+#  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-health-probe-request-path"=/healthz
+
+
+# Update your values.custom.yaml file with the appropriate values under ingress
+
+# Proceed with installing / upgrading private-ai via helm into the private-ai namespace
+helm upgrade --install \
+  private-ai oci://crprivateaiprod.azurecr.io/helm/private-ai \
+  --namespace private-ai \
+  -f values.custom.yaml \
+  --version 1.5.0
 ```
 
 ### External Secrets Operator
-If you would like to store you license file and docker credentials in an external secret store, you can use the External Secrets Operator helm chart.
+If you would like to store you license file and docker credentials in an external secret store, you can use the External Secrets Operator helm chart. Please see the [external secrets operator docs](https://external-secrets.io/latest/).
 
 Note: The External Secrets chart is not listed as a dependency in this chart, and must be installed separately prior to installation.
 
@@ -118,7 +126,9 @@ helm repo add external-secrets https://charts.external-secrets.io
 helm repo update
 
 # Upgrade or install the External Secrets operator into the private-ai namespace
-helm -n private-ai upgrade --install external-secrets external-secrets/external-secrets
+helm upgrade --install \
+  external-secrets external-secrets/external-secrets \
+  --namespace private-ai
 
 # Create two secrets, one for the license file and one for the docker credentials, in your external secret store of choice
 ```
@@ -173,9 +183,8 @@ externalsecrets:
 
 # Proceed with installing / upgrading private-ai via helm into the private-ai namespace
 helm upgrade --install \
---namespace private-ai \
-private-ai \
--f values.custom.yaml \
-oci://crprivateaiprod.azurecr.io/helm/private-ai \
---version 1.5.0
+  private-ai oci://crprivateaiprod.azurecr.io/helm/private-ai \
+  --namespace private-ai \
+  -f values.custom.yaml \
+  --version 1.5.0
 ```
