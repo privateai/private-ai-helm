@@ -217,16 +217,16 @@ export USER_ASSIGNED_IDENTITY_NAME="youridentityname"
 export KEY_VAULT_URL="$(az keyvault show --name $AKS_CLUSTER_NAME --query 'properties.vaultUri' -o tsv)"
 
 # Create a user-assigned managed identity if using user-assigned managed identity for this tutorial
-az identity create --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP
+az identity create --name $USER_ASSIGNED_IDENTITY_NAME --resource-group $RESOURCE_GROUP
 
 # Create key vault policy for UAI
 az keyvault set-policy --name $AKS_CLUSTER_NAME \
   --secret-permissions get \
-  --object-id $(az identity show --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP --query 'principalId' -o tsv)
+  --object-id $(az identity show --name $USER_ASSIGNED_IDENTITY_NAME --resource-group $RESOURCE_GROUP --query 'principalId' -o tsv)
 
 # Create kubernetes service account bound to UAI
-export USER_ASSIGNED_IDENTITY_CLIENT_ID="$(az identity show --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP --query 'clientId' -o tsv)"
-export USER_ASSIGNED_IDENTITY_TENANT_ID="$(az identity show --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP --query 'tenantId' -o tsv)"
+export USER_ASSIGNED_IDENTITY_CLIENT_ID="$(az identity show --name $USER_ASSIGNED_IDENTITY_NAME --resource-group $RESOURCE_GROUP --query 'clientId' -o tsv)"
+export USER_ASSIGNED_IDENTITY_TENANT_ID="$(az identity show --name $USER_ASSIGNED_IDENTITY_NAME --resource-group $RESOURCE_GROUP --query 'tenantId' -o tsv)"
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: ServiceAccount
