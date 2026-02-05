@@ -87,7 +87,7 @@ helm upgrade --install \
 #  --set webhook.securePort=10255
 
 # Create a namespaces in your cluster for the haproxy-ingress chart
-kubectl create namespace cert-manager
+kubectl create namespace haproxy-controller
 
 # Upgrade or install haproxy-ingress into the cluster
 helm upgrade --install \
@@ -130,23 +130,24 @@ helm upgrade --install \
   external-secrets external-secrets/external-secrets \
   --namespace private-ai
 
-# Create two secrets, one for the license file and one for the docker credentials, in your external secret store of choice
+# Create two secrets, one for the license file and one for the docker credentials, in your external secret store of choice. You can optionally create a secret for environment variables to configure the Private AI container.
 ```
 
-#### Example AWS secret for Private AI license file
-![license-type](./images/license-type.png)
-![license-name](./images/license-name.png)
-#### Example AWS secret for Private AI docker credentials
-![docker-type](./images/docker-type.png)
-![docker-name](./images/docker-name.png)
-#### Example AWS secret for Private AI environment variables
+#### AWS Secrets Manager Steps
+Example AWS secret for Private AI license file
+![license-type](./images/aws-license-type.png)
+![license-name](./images/aws-license-name.png)
+Example AWS secret for Private AI docker credentials
+![docker-type](./images/aws-docker-type.png)
+![docker-name](./images/aws-docker-name.png)
+Example AWS secret for Private AI environment variables
 This is optional, and can be enabled or disabled in the values file.
-![env-type](./images/env-type.png)
-![env-name](./images/env-name.png)
+![env-type](./images/aws-env-type.png)
+![env-name](./images/aws-env-name.png)
 
+Next, configure the AWS Secret Store. See [the AWS Secrets Manager docs](https://external-secrets.io/latest/provider/aws-secrets-manager/) for detailed instructions.
 ```console
 # Create a secret-store within the private-ai namespace
-# See https://external-secrets.io/latest/api/secretstore/ for detailed instructions
 # Example AWS secret store based on access key:
 kubectl create secret -n private-ai generic awssm-secret --from-file=./access-key --from-file=./secret-access-key
 kubectl apply -f aws-secret-store.yaml
@@ -174,9 +175,97 @@ spec:
             name: awssm-secret
             key: secret-access-key
 ```
+#### Azure Key Vault Steps
+Note: Azure does not allow for multiple key-value pairs per secret entry. To match the data structure of the External Secrets Operator, each secret must be uploaded as a JSON object, with the key matching the property from the values file.
+
+Example Azure secret for Private AI license file
+![license-name](./images/azure-license-name.png)
+```json
+{
+  "license.json": { "id": 1, "tier": "..." }
+}
+```
+Example Azure secret for Private AI docker credentials
+![docker-name](./images/azure-docker-name.png)
+```json
+{
+  "server": "crprivateaiprod.azurecr.io",
+  "username": "docker-username",
+  "password": "docker-password"
+}
+```
+Example Azure secret for Private AI environment variables
+This is optional, and can be enabled or disabled in the values file.
+![env-name](./images/azure-env-name.png)
+```json
+{
+  "PAI_AZ_COMPUTER_VISION_KEY": "secretvalue"
+}
+```
+
+Next, configure the Azure Secret Store. See the [Azure Key Vault docs](https://external-secrets.io/latest/provider/azure-key-vault/) for more detailed instructions.
+
+You must configure access from the Secret Store object in kubernetes to the Azure Key Vault. In this example, we are using a workload identity federated with an OIDC provider in the kubernetes cluster, and a simple access policy on the key vault. See the [Azure Workload Identity docs](https://azure.github.io/azure-workload-identity/docs/quick-start.html) for more options.
+
 ```console
-# Update your values.custom.yaml file to enable the external secrets operator, and disable the default secret creation
-# Ensure to update the docker credentials and license remoteRefKey and properties as per the secret names and properties, respectively
+# Set up your AKS cluster and resource group variables
+export AKS_CLUSTER_NAME="yourcluster"
+export RESOURCE_GROUP="yourresourcegroup"
+export USER_ASSIGNED_IDENTITY_NAME="youridentityname"
+
+# Get the Key Vault URL
+export KEY_VAULT_URL="$(az keyvault show --name $AKS_CLUSTER_NAME --query 'properties.vaultUri' -o tsv)"
+
+# Create a user-assigned managed identity if using user-assigned managed identity for this tutorial
+az identity create --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP
+
+# Create key vault policy for UAI
+az keyvault set-policy --name $AKS_CLUSTER_NAME \
+  --secret-permissions get \
+  --object-id $(az identity show --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP --query 'principalId' -o tsv)
+
+# Create kubernetes service account bound to UAI
+export USER_ASSIGNED_IDENTITY_CLIENT_ID="$(az identity show --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP --query 'clientId' -o tsv)"
+export USER_ASSIGNED_IDENTITY_TENANT_ID="$(az identity show --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP --query 'tenantId' -o tsv)"
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: ${USER_ASSIGNED_IDENTITY_CLIENT_ID}
+    azure.workload.identity/tenant-id: ${USER_ASSIGNED_IDENTITY_TENANT_ID}
+  name: azure-keyvault
+  namespace: private-ai
+EOF
+
+# Create federated credential
+az identity federated-credential create \
+  --name "kubernetes-federated-credential" \
+  --identity-name $USER_ASSIGNED_IDENTITY_NAME \
+  --resource-group $RESOURCE_GROUP \
+  --issuer $(az aks show --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --query "oidcIssuerProfile.issuerUrl" -o tsv) \
+  --subject "system:serviceaccount:private-ai:azure-keyvault"
+
+# Create the secret store
+cat <<EOF | kubectl apply -f -
+apiVersion: external-secrets.io/v1
+kind: SecretStore
+metadata:
+  name: azure-backend
+  namespace: private-ai
+spec:
+  provider:
+    azurekv:
+      authType: WorkloadIdentity
+      vaultUrl: ${KEY_VAULT_URL}
+      serviceAccountRef:
+        name: azure-keyvault
+EOF
+```
+
+Update your values.custom.yaml file to enable the external secrets operator, and disable the default secret creation. Ensure to update the docker credentials and license remoteRefKey and properties as per the secret names and properties, respectively.
+
+```console
 externalsecrets:
   enabled: true
 ...
