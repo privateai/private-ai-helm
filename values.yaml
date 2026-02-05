@@ -258,6 +258,8 @@ externalsecrets:
     # annotations:
     #   annotation-key1: "annotation-value1"
     #   annotation-key2: "annotation-value2"
+    # Set the refresh interval to check for updated secrets
+    refreshInterval: "1h"
     # Enables or disables Private AI environment secrets
     enabled: false
     # This is the reference to the name of the secret from the secret store
