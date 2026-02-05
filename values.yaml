@@ -252,6 +252,8 @@ externalsecrets:
   secrets:
     # Name of the externalsecret and secret objects for deployment
     name: "pai-secrets"
+    # Enables or disables Private AI environment secrets
+    enabled: false
     # Optional annotations for the deployment externalsecret and secret objects
     annotations: {}
     # Example annotations
@@ -260,8 +262,6 @@ externalsecrets:
     #   annotation-key2: "annotation-value2"
     # Set the refresh interval to check for updated secrets
     refreshInterval: "1h"
-    # Enables or disables Private AI environment secrets
-    enabled: false
     # This is the reference to the name of the secret from the secret store
     # All properties will be added from the secret in the secret store to the container environment variables
     remoteRefKey: "pai-secrets"
