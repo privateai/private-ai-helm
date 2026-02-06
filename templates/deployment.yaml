@@ -48,7 +48,7 @@ spec:
             - name: http
               containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
-          {{- with .Values.envVars }}
+          {{- with .Values.deployment.envVars }}
           env:
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -61,7 +61,7 @@ spec:
                 {{- end }}
                 optional: true
           volumeMounts:
-            - name: {{ .Values.license.volumeMount }}
+            - name: {{ .Values.deployment.license.volumeMount }}
               mountPath: /app/license
           {{- if .Values.deployment.gpuEnabled }}
             - name: dshm-volume
@@ -98,12 +98,12 @@ spec:
             failureThreshold: {{ .Values.deployment.readinessProbe.failureThreshold }}
           {{- end }}
       volumes:
-        - name: {{ .Values.license.volumeMount }}
+        - name: {{ .Values.deployment.license.volumeMount }}
           secret:
             {{- if .Values.externalsecrets.enabled }}
             secretName: {{ .Values.externalsecrets.license.name }}
             {{- else }}
-            secretName: {{ .Values.license.name }}
+            secretName: {{ .Values.deployemnt.license.name }}
             {{- end }}
       {{- if .Values.deployment.gpuEnabled }}
         - name: dshm-volume

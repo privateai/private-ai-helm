@@ -33,6 +33,28 @@ deployment:
   #   annotation-key1: "annotation-value1"
   #   annotation-key2: "annotation-value1"
 
+  # Settings for the Private AI license file
+  license:
+    # If you enable the External Secrets Operator, this section will be ignored
+    # Sets the name of the license secret object
+    name: "pai-license"
+    # Add optional annotations for the license secret. For more details see https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+    annotations: {}
+    # Example annotations
+    # annotations:
+    #   annotation-key1: "annotation-value1"
+    #   annotation-key2: "annotation-value2"
+    volumeMount: "license-volume"
+    # If you use the External Secrets Operator, you can ignore this setting as the license file will be populated via a secret
+    data: 'Override with your license data. See readme for more details'
+
+  # Enter any environment variables for your deployment. You can find the list at https://docs.private-ai.com/environment-variables/
+  envVars: []
+  # Example environment variables:
+  # envVars:
+  #   - name: "PAI_DISABLE_RAM_CHECK"
+  #     value: "true"
+
   # These are the values for liveness, startup and readiness probes.
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#probe-v1-core
   livenessProbe:
@@ -151,28 +173,6 @@ service:
   # Set the AWS load balancer to be internal only, if you are planning to use an ingress to manage traffic
   # annotations:
   #   service.beta.kubernetes.io/aws-load-balancer-internal: "true"
-
-# Settings for the Private AI license file
-license:
-  # If you enable the External Secrets Operator, this section will be ignored
-  # Sets the name of the license secret object
-  name: "pai-license"
-  # Add optional annotations for the license secret. For more details see https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-  annotations: {}
-  # Example annotations
-  # annotations:
-  #   annotation-key1: "annotation-value1"
-  #   annotation-key2: "annotation-value2"
-  volumeMount: "license-volume"
-  # If you use the External Secrets Operator, you can ignore this setting as the license file will be populated via a secret
-  data: 'Override with your license data. See readme for more details'
-
-# Enter any environment variables for your deployment. You can find the list at https://docs.private-ai.com/environment-variables/
-envVars: []
-# Example environment variables:
-# envVars:
-#   - name: "PAI_DISABLE_RAM_CHECK"
-#     value: "true"
 
 # Configuration options for adding a kubernetes secret
 # This secret will be added to the environment variable for the Private AI deployment
