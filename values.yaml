@@ -167,7 +167,6 @@ deployment:
     memory: "8Gi"
     cpu: "3"
 
-
 # This section contains configuration for the kubernetes service for the deployment
 service:
   # Set the type for the service
