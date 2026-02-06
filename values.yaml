@@ -19,20 +19,34 @@ gpuEnabled: false
 imagePullSecrets:
   name: "crprivateaiprod-creds"
 
+# Override the default name of the application, used in the helper script to populate things like selector labels
 nameOverride: ""
+# Override the full name of the application
 fullnameOverride: ""
 
+# Add custom pod annotations to the deployment
 podAnnotations: {}
+# Example annotations
+# podAnnotations:
+#   annotation-key1: "annotation-value1"
+#   annotation-key2: "annotation-value1"
 
+# Add kubrernetes service configuration for the deployment
 service:
+  # Set the type for the service
   type: "LoadBalancer"
+  # Set the port for the service
   port: 80
+  # Set the target port for the deployment
   targetPort: 8080
+  # Add custom annotations to the service
   annotations: {}
   # Set the Azure load balancer to be internal only, if you are planning to use an ingress to manage traffic
-  # annotations: {
+  # annotations:
   #   service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-  # }
+  # Set the AWS load balancer to be internal only, if you are planning to use an ingress to manage traffic
+  # annotations:
+  #   service.beta.kubernetes.io/aws-load-balancer-internal: "true"
 
 # These are the values for liveness, startup and readiness probes.
 # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#probe-v1-core
@@ -113,7 +127,6 @@ topologySpreadConstraints:
   #     topologyKey: "topology.kubernetes.io/zone"
   #     whenUnsatisfiable: "ScheduleAnyway"
 
-
 tolerations: 
   enabled: false
   values: []
@@ -123,8 +136,6 @@ tolerations:
   #     operator: "Equal"
   #     value: "private-ai"
   #     effect: "NoSchedule"
-
-
 
 # There are the values for requests and limits
 # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits
@@ -153,15 +164,17 @@ license:
   # If you use the External Secrets Operator, you can ignore this setting as the license file will be populated via a secret
   data: 'Override with your license data. See readme for more details'
 
+# Enter any environment variables for your deployment. You can find the list at https://docs.private-ai.com/environment-variables/
 envVars: []
-  # Enter any environment variables for your deployment. You can find the list at https://docs.private-ai.com/environment-variables/
-  # - name: "PAI_DISABLE_RAM_CHECK"
-  #   value: "true"
+# Example environment variables:
+# envVars:
+#   - name: "PAI_DISABLE_RAM_CHECK"
+#     value: "true"
 
 # Configuration options for adding a kubernetes secret
 # This secret will be added to the environment variable for the Private AI deployment
+# If you use the External Secrets Operator, this section will be ignored
 secrets:
-  # If you use the External Secrets Operator, this section will be ignored
   # Sets the name for the secrets
   name: "pai-secrets"
   # Add optional annotations for the deployment secret. For more details see https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
@@ -177,49 +190,20 @@ secrets:
     # - name: "PAI_AZ_COMPUTER_VISION_KEY"
     #   value: "keyvalue"
 
-# Configuration for the cert-manager subchart
-certmanager:
-  enabled: false
-  namespace: "cert-manager"
-  clusterResourceNamespace: "private-ai"
-  crds:
-    enabled: true
-    # Change keep flag to false if you would like helm to remove the cert-manager CRDs on uninstall
-    keep: true
-  # Required webhook settings if deploying to AWS with the VPC-CNI pluggin
-  # webhook:
-  #   hostNetwork: true
-  #   securePort: 10255
-
-# Configuration for the ingress-nginx subchart
-ingressnginx:
-  enabled: false
-  # Azure load balancer settings for the internal Private AI service
-  # controller:
-  #   service:
-  #     annotations:
-  #       service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: "/healthz"
-  #     externalTrafficPolicy: "Local"
-  # AWS load balancer setting for the internal Private AI service
-  # controller:
-  #   service:
-  #     internal:
-  #       enabled: true
-  #       annotations:
-  #         service.beta.kubernetes.io/aws-load-balancer-scheme: "internal"
-
 # Specifies whether to deploy the kubernetes ingress
-# Requires ingress-nginx and cert-manager to be installed
+# Requires haproxy-ingress and cert-manager to be installed
 ingress:
+  # Enable or disable the ingress configuration
   enabled: false
-  # Set the class to handle the ingress traffic. Default to nginx
-  ingressClassName: "nginx"
-  # Set your own custom annotations
+  # Set the class to handle the ingress traffic. Default to haproxy
+  ingressClassName: "haproxy"
+  # Set your own custom annotations, see https://www.haproxy.com/documentation/kubernetes-ingress/community/configuration-reference/ingress/
   annotations: {}
-  # annotations: {
-  #   alb.ingress.kubernetes.io/ip-address-type: "ipv4"
-  # }
-  # Provision selfsigned certificates by default. Change if you wish to customize
+  # Example to rate limit to 15 requests per minute
+  # annotations:
+  #   haproxy.org/rate-limit-requests: 15
+  #   haproxy.org/rate-limit-period: "1m"
+  # Provision selfsigned certificates by default via cert-manager. Change if you wish to customize
   selfsigned: true
   # Replace this with the domain name for the ingress
   host: "ingress.domain.com"
@@ -268,14 +252,16 @@ externalsecrets:
   secrets:
     # Name of the externalsecret and secret objects for deployment
     name: "pai-secrets"
+    # Enables or disables Private AI environment secrets
+    enabled: false
     # Optional annotations for the deployment externalsecret and secret objects
     annotations: {}
     # Example annotations
     # annotations:
     #   annotation-key1: "annotation-value1"
     #   annotation-key2: "annotation-value2"
-    # Enables or disables Private AI environment secrets
-    enabled: false
+    # Set the refresh interval to check for updated secrets
+    refreshInterval: "1h"
     # This is the reference to the name of the secret from the secret store
     # All properties will be added from the secret in the secret store to the container environment variables
     remoteRefKey: "pai-secrets"

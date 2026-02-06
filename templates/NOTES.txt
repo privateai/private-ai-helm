@@ -1,12 +1,13 @@
 Successfully installed {{ .Release.Name }} version {{ .Chart.AppVersion }}
-{{- if .Values.ingress.enabled }}
-To test the ingress connectivity, run the following
-      curl {{ if .Values.ingress.selfsigned }}-k {{ end }}https://{{ .Values.ingress.host }}/
-{{- else if eq "LoadBalancer" .Values.service.type }}
 
 NOTE: It can take a few minutes to download and start the container.
 To get the status of the container, run the following
       kubectl --namespace {{ .Release.Namespace }} get pods
+
+{{- if .Values.ingress.enabled }}
+To test the ingress connectivity, run the following
+      curl {{ if .Values.ingress.selfsigned }}-k {{ end }}https://{{ .Values.ingress.host }}/
+{{- else if eq "LoadBalancer" .Values.service.type }}
 
 NOTE: It may take a few minutes for the LoadBalancer IP to be available.
 To get the status of the load balancer, run the following
