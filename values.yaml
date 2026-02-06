@@ -26,6 +26,17 @@ deployment:
   imagePullSecrets:
     name: "crprivateaiprod-creds"
 
+  # This section contains optional secret mounts for the deployment
+  additionalMounts:
+    enabled: false
+    volumeMounts:
+      - name: "mount-name"
+        mountPath: "/mount/path"
+    volumes:
+      - name: "mount-name"
+        secret:
+          secretName: "mount-secret"
+
   # Add custom pod annotations to the deployment
   podAnnotations: {}
   # Example annotations

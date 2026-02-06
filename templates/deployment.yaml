@@ -27,20 +27,20 @@ spec:
       containers:
         - name: {{ .Chart.Name }}          
           image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag | default .Chart.AppVersion }}"
-          {{- if or .Values.limits.enabled .Values.requests.enabled .Values.deployment.gpuEnabled }}
+          {{- if or .Values.deployment.limits.enabled .Values.deployment.requests.enabled .Values.deployment.gpuEnabled }}
           resources:
-            {{- if or .Values.limits.enabled .Values.deployment.gpuEnabled }}
+            {{- if or .Values.deployment.limits.enabled .Values.deployment.gpuEnabled }}
             limits:
               {{- if .Values.deployment.gpuEnabled }}
               nvidia.com/gpu: 1
               {{- end }}
-              memory: {{ .Values.limits.memory }}
-              cpu: {{ .Values.limits.cpu }}
+              memory: {{ .Values.deployment.limits.memory }}
+              cpu: {{ .Values.deployment.limits.cpu }}
             {{- end }}
-            {{- if .Values.requests.enabled}}
+            {{- if .Values.deployment.requests.enabled}}
             requests:
-              memory: {{ .Values.requests.memory }}
-              cpu: {{ .Values.requests.cpu }}
+              memory: {{ .Values.deployment.requests.memory }}
+              cpu: {{ .Values.deployment.requests.cpu }}
             {{- end }}
           {{- end }}
           imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
@@ -63,6 +63,11 @@ spec:
           volumeMounts:
             - name: {{ .Values.deployment.license.volumeMount }}
               mountPath: /app/license
+          {{- if .Values.deployment.additionalMounts.enabled }}
+            {{- with .Values.deployment.additionalMounts.volumeMounts }}
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+          {{- end }}
           {{- if .Values.deployment.gpuEnabled }}
             - name: dshm-volume
               mountPath: /dev/shm
@@ -103,8 +108,13 @@ spec:
             {{- if .Values.externalsecrets.enabled }}
             secretName: {{ .Values.externalsecrets.license.name }}
             {{- else }}
-            secretName: {{ .Values.deployemnt.license.name }}
+            secretName: {{ .Values.deployment.license.name }}
             {{- end }}
+      {{- if .Values.deployment.additionalMounts.enabled }}
+        {{- with .Values.deployment.additionalMounts.volumes }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+      {{- end }}
       {{- if .Values.deployment.gpuEnabled }}
         - name: dshm-volume
           emptyDir:
