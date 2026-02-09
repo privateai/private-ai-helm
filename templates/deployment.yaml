@@ -77,6 +77,7 @@ spec:
             httpGet:
               path: /healthz
               port: {{ .Values.service.targetPort }}
+              scheme: {{ .Values.deployment.livenessProbe.scheme }}
             periodSeconds: {{ .Values.deployment.livenessProbe.periodSeconds }}
             initialDelaySeconds: {{ .Values.deployment.livenessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.deployment.livenessProbe.timeoutSeconds }}
@@ -87,6 +88,7 @@ spec:
             httpGet:
               path: /healthz
               port: {{ .Values.service.targetPort }}
+              scheme: {{ .Values.deployment.startupProbe.scheme }}
             periodSeconds: {{ .Values.deployment.startupProbe.periodSeconds }}
             initialDelaySeconds: {{ .Values.deployment.startupProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.deployment.startupProbe.timeoutSeconds }}
@@ -97,6 +99,7 @@ spec:
             httpGet:
               path: /healthz
               port: {{ .Values.service.targetPort }}
+              scheme: {{ .Values.deployment.readinessProbe.scheme }}
             periodSeconds: {{ .Values.deployment.readinessProbe.periodSeconds }}
             initialDelaySeconds: {{ .Values.deployment.readinessProbe.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.deployment.readinessProbe.timeoutSeconds }}

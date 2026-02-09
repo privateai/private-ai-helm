@@ -70,6 +70,7 @@ deployment:
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#probe-v1-core
   livenessProbe:
     enabled: false
+    scheme: "HTTP"
     initialDelaySeconds: 60
     periodSeconds: 60
     failureThreshold: 30
@@ -77,12 +78,14 @@ deployment:
   startupProbe:
     # Note: You should expect to see warnings for startup probe failures in the pod events until the container starts
     enabled: true
+    scheme: "HTTP"
     initialDelaySeconds: 5
     periodSeconds: 5
     failureThreshold: 23
     timeoutSeconds: 1
   readinessProbe:
     enabled: true
+    scheme: "HTTP"
     initialDelaySeconds: 60
     periodSeconds: 20
     failureThreshold: 3
