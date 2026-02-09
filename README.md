@@ -21,15 +21,15 @@ kubectl create namespace private-ai
 
 # Create a secret with your docker credentials from the customer portal
 kubectl -n private-ai create secret docker-registry crprivateaiprod-creds \
-    --docker-server=crprivateaiprod.azurecr.io \
-    --docker-username=USERNAME \
-    --docker-password=PASSWORD
+  --docker-server=crprivateaiprod.azurecr.io \
+  --docker-username=USERNAME \
+  --docker-password=PASSWORD
 
 # Login to the helm registry with your docker credentials
 helm registry login crprivateaiprod.azurecr.io
 
 # Create a custom values file for your specific installation
-helm show values oci://crprivateaiprod.azurecr.io/helm/private-ai:1.6.0 > values.custom.yaml
+helm show values oci://crprivateaiprod.azurecr.io/helm/private-ai:1.7.0 > values.custom.yaml
 
 # Copy your license.json file contents and paste them into the license.data section of the values.custom.yaml file with single quotes surrounding, as per below
 license:
@@ -40,7 +40,7 @@ helm upgrade --install \
   private-ai oci://crprivateaiprod.azurecr.io/helm/private-ai \
   --namespace private-ai \
   -f values.custom.yaml \
-  --version 1.6.0
+  --version 1.7.0
 ```
 
 ## Testing
@@ -109,7 +109,7 @@ helm upgrade --install \
   private-ai oci://crprivateaiprod.azurecr.io/helm/private-ai \
   --namespace private-ai \
   -f values.custom.yaml \
-  --version 1.6.0
+  --version 1.7.0
 ```
 
 ### External Secrets Operator
@@ -269,11 +269,14 @@ Update your values.custom.yaml file to enable the external secrets operator, and
 externalsecrets:
   enabled: true
 ...
+```
 
+Proceed with installing the helm chart
+```console
 # Proceed with installing / upgrading private-ai via helm into the private-ai namespace
 helm upgrade --install \
   private-ai oci://crprivateaiprod.azurecr.io/helm/private-ai \
   --namespace private-ai \
   -f values.custom.yaml \
-  --version 1.6.0
+  --version 1.7.0
 ```
