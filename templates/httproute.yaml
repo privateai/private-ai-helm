@@ -1,0 +1,33 @@
+{{- if .Values.apiGateway.enabled }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "private-ai.fullname" . }}-route
+  labels:
+    {{- include "private-ai.labels" . | nindent 4 }}
+  {{- with .Values.apiGateway.httpRoute.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  parentRefs:
+    - name: {{ .Values.apiGateway.gatewayName }}
+  hostnames:
+    - {{ .Values.apiGateway.httpRoute.hostname }}
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: {{ .Values.apiGateway.httpRoute.pathPrefix }}
+      backendRefs:
+        - name: {{ include "private-ai.fullname" . }}
+          port: {{ .Values.apiGateway.httpRoute.port }}
+          weight: 100
+
+      # Gateway API v1 timeout example (optional)
+      # filters:
+      #   - type: RequestTimeout
+      #     requestTimeout:
+      #       duration: 30s
+{{- end }}
