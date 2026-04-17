@@ -281,3 +281,53 @@ externalsecrets:
     # This is the reference to the name of the secret from the secret store
     # All properties will be added from the secret in the secret store to the container environment variables
     remoteRefKey: "pai-secrets"
+
+# Configuration for Kubernetes API Gateway (networking.gateway.k8s.io)
+# Provides an alternative to ingress with more advanced routing capabilities
+apiGateway:
+  # Enable or disable the API Gateway configuration
+  enabled: false
+  # The namespace where the GatewayClass is deployed (typically gateway-api-system)
+  # Set to "" to use the default GatewayClass available in the cluster
+  gatewayClassName: "istio"
+  # The name of the Gateway resource to create
+  gatewayName: "private-ai-gateway"
+  # Add custom annotations to the Gateway resource
+  annotations: {}
+  # Example annotations
+  # annotations:
+  #   annotation-key1: "annotation-value1"
+  #   annotation-key2: "annotation-value2"
+  # Configuration for the Gateway listeners
+  listeners:
+    # HTTP listener configuration
+    http:
+      # Enable HTTP listener
+      enabled: true
+      # Port for HTTP listener
+      port: 80
+      # Hostname for HTTP routes (leave empty for all hostnames)
+      hostname: ""
+    # HTTPS listener configuration
+    https:
+      # Enable HTTPS listener
+      enabled: true
+      # Port for HTTPS listener
+      port: 443
+      # Hostname for HTTPS routes
+      hostname: ""
+      # TLS certificate secret name
+      certificateRef: "private-ai-tls"
+  # HTTPRoute configuration
+  httpRoute:
+    # Hostname for the HTTPRoute
+    hostname: "api-gateway.domain.com"
+    # Path prefix for routing (use "/" for all paths)
+    pathPrefix: "/"
+    # Port on the service to route to
+    port: 80
+    # Add custom annotations to the HTTPRoute resource
+    annotations: {}
+    # Example annotations
+    # annotations:
+    #   annotation-key1: "annotation-value1"

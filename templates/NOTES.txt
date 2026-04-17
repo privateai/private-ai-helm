@@ -7,6 +7,17 @@ To get the status of the container, run the following
 {{- if .Values.ingress.enabled }}
 To test the ingress connectivity, run the following
       curl {{ if .Values.ingress.selfsigned }}-k {{ end }}https://{{ .Values.ingress.host }}/
+{{- else if .Values.apiGateway.enabled }}
+To check the API Gateway status, run the following
+      kubectl --namespace {{ .Release.Namespace }} get gateway {{ .Values.apiGateway.gatewayName }}
+      kubectl --namespace {{ .Release.Namespace }} get httproutes
+
+To test the API Gateway connectivity, run the following
+      curl http://{{ .Values.apiGateway.httpRoute.hostname }}/
+
+NOTE: The external IP/DNS for the gateway may take a few minutes to be provisioned.
+Check the gateway status with:
+      kubectl --namespace {{ .Release.Namespace }} describe gateway {{ .Values.apiGateway.gatewayName }}
 {{- else if eq "LoadBalancer" .Values.service.type }}
 
 NOTE: It may take a few minutes for the LoadBalancer IP to be available.
